@@ -11,30 +11,120 @@
       name="description"
       content="A filterable gallery of D&D miniatures hosted on GitHub Pages."
     />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=EB+Garamond:ital,wght@0,400;0,700;1,400;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Quattrocento:wght@400;700&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&display=swap"
+      rel="stylesheet"
+    />
     <!-- The Lucide script is no longer needed and has been removed. -->
+    <script>
+      (() => {
+        const key = "hiraeth-theme";
+        let saved = null;
+        try {
+          saved = localStorage.getItem(key);
+        } catch {}
+        const systemDark = window.matchMedia(
+          "(prefers-color-scheme: dark)"
+        ).matches;
+        const theme = saved === "light" || saved === "dark"
+          ? saved
+          : systemDark
+          ? "dark"
+          : "light";
+        document.documentElement.setAttribute("data-theme", theme);
+      })();
+    </script>
     <style>
       :root {
-        --bg: #0f1115;
-        --card: #171a21;
-        --muted: #a9b1bd;
-        --text: #e6eaf0;
-        --accent: #72a1ff;
-        --accent-2: #ffd166;
-        --border: #2a3146;
-        --ok: #7bd88f;
-        --warn: #ffb86c;
-        --danger: #ff6b6b;
-        --chip: #1f2330;
-        --shadow: 0 1px 2px rgba(0, 0, 0, 0.2),
-          0 8px 24px rgba(0, 0, 0, 0.12);
-        --shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.2),
-          0 10px 30px rgba(0, 0, 0, 0.15);
+        --bg: #f2f2f2;
+        --card: rgba(255, 255, 255, 0.85);
+        --surface-2: rgba(248, 245, 241, 0.7);
+        --muted: #61656a;
+        --text: #2f3133;
+        --primary: #7a2f26;
+        --link: #bc9d76;
+        --shelf: #aa5a32;
+        --book: #4d7f4a;
+        --chapter: #cfa067;
+        --page: #c09054;
+        --page-draft: #51407c;
+        --accent: var(--link);
+        --accent-2: var(--chapter);
+        --ok: var(--book);
+        --warn: var(--chapter);
+        --danger: var(--shelf);
+        --border: rgba(216, 216, 216, 0.6);
+        --chip: var(--surface-2);
+        --shadow: 0 12px 40px rgba(20, 18, 16, 0.08);
+        --shadow-lg: 0 20px 50px rgba(20, 18, 16, 0.15);
+        --toolbar-bg: rgba(255, 255, 255, 0.75);
+        --media-bg: rgba(248, 245, 241, 0.95);
+        --input-bg: rgba(255, 255, 255, 0.9);
+        --overlay: rgba(47, 49, 51, 0.58);
+        --overlay-strong: rgba(47, 49, 51, 0.9);
+        --popup-surface: #ffffff;
+        --popup-backdrop: #2f3133;
+        --popup-strong-backdrop: #2f3133;
+        --popup-control-bg: #ffffff;
+        --list-row-alt: rgba(47, 49, 51, 0.035);
+        --accent-2-soft: rgba(207, 160, 103, 0.16);
+        --shimmer-0: rgba(255, 255, 255, 0);
+        --shimmer-1: rgba(255, 255, 255, 0.55);
+        --shimmer-2: rgba(255, 255, 255, 0.75);
+        --on-accent: #151618;
+        --on-strong: #ffffff;
         --radius: 12px;
         --radius-sm: 8px;
         --radius-lg: 16px;
-        --font-body: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
-          Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji",
-          "Segoe UI Emoji";
+        --font-header: "IM Fell English SC", serif;
+        --font-body: "Cormorant Garamond", "EB Garamond", "Libre Baskerville",
+          "Quattrocento", "Source Sans 3", serif;
+        --font-ui: "Source Sans 3", system-ui, -apple-system, "Segoe UI",
+          sans-serif;
+      }
+
+      html[data-theme="dark"] {
+        --bg: #151618;
+        --card: rgba(38, 41, 46, 0.65);
+        --surface-2: rgba(30, 32, 36, 0.6);
+        --muted: #b2b5bc;
+        --text: #e6e7ea;
+        --primary: #8e8abf;
+        --link: #8380e2;
+        --shelf: #f43d5a;
+        --book: #16c4a1;
+        --chapter: #e9ad4a;
+        --page: #4aa1d8;
+        --page-draft: #9a63db;
+        --accent: var(--link);
+        --accent-2: var(--chapter);
+        --ok: var(--book);
+        --warn: var(--chapter);
+        --danger: var(--shelf);
+        --border: rgba(58, 62, 70, 0.6);
+        --chip: var(--surface-2);
+        --shadow: 0 15px 45px rgba(0, 0, 0, 0.5);
+        --shadow-lg: 0 25px 60px rgba(0, 0, 0, 0.8);
+        --toolbar-bg: rgba(21, 22, 24, 0.82);
+        --media-bg: rgba(25, 26, 30, 0.95);
+        --input-bg: rgba(30, 32, 36, 0.92);
+        --overlay: rgba(0, 0, 0, 0.6);
+        --overlay-strong: rgba(0, 0, 0, 0.9);
+        --popup-surface: #26292e;
+        --popup-backdrop: #000000;
+        --popup-strong-backdrop: #000000;
+        --popup-control-bg: #26292e;
+        --list-row-alt: rgba(255, 255, 255, 0.02);
+        --accent-2-soft: rgba(233, 173, 74, 0.16);
+        --shimmer-0: rgba(255, 255, 255, 0);
+        --shimmer-1: rgba(255, 255, 255, 0.05);
+        --shimmer-2: rgba(255, 255, 255, 0.1);
+        --on-accent: #151618;
+        --on-strong: #ffffff;
       }
 
       @media (prefers-reduced-motion: reduce) {
@@ -59,6 +149,14 @@
         background: var(--bg);
         color: var(--text);
         font: 500 16px/1.5 var(--font-body);
+      }
+
+      button,
+      input,
+      select,
+      textarea,
+      label {
+        font-family: var(--font-ui);
       }
 
       .icon {
@@ -88,6 +186,7 @@
         margin: 0 auto;
         display: flex;
         align-items: center;
+        flex-wrap: wrap;
         gap: 16px;
         border-bottom: 1px solid var(--border);
       }
@@ -97,10 +196,28 @@
         flex-shrink: 0;
       }
 
+      .site-logo {
+        transition: filter 0.2s ease;
+      }
+
+      html[data-theme="light"] .site-logo {
+        filter: invert(1);
+      }
+
+      html[data-theme="dark"] .site-logo {
+        filter: none;
+      }
+
+      .header-main {
+        flex: 1 1 260px;
+        min-width: 0;
+      }
+
       header h1 {
         margin: 0;
         font-size: 28px;
         letter-spacing: 0.2px;
+        font-family: var(--font-header);
       }
 
       header .subtitle {
@@ -113,15 +230,16 @@
         position: sticky;
         top: 0;
         z-index: 50;
-        background: rgba(15, 17, 21, 0.8);
+        background: var(--toolbar-bg);
         backdrop-filter: blur(8px);
         max-width: 1100px;
         margin: 0 auto;
         padding: 12px 16px;
         display: grid;
-        grid-template-columns: 1fr auto auto auto auto;
+        grid-template-columns: 1fr auto auto auto auto auto;
         gap: 8px;
         border-bottom: 1px solid var(--border);
+        align-items: center;
       }
 
       .toolbar input[type="search"] {
@@ -132,6 +250,7 @@
         border-radius: var(--radius-sm);
         color: var(--text);
         outline: none;
+        font-family: var(--font-ui);
       }
 
       .toolbar select {
@@ -141,6 +260,7 @@
         border-radius: var(--radius-sm);
         color: var(--text);
         outline: none;
+        font-family: var(--font-ui);
       }
 
       .toolbar .btn {
@@ -154,6 +274,7 @@
         align-items: center;
         gap: 8px;
         transition: border-color 0.2s;
+        font-family: var(--font-ui);
       }
 
       .toolbar .btn:hover,
@@ -162,10 +283,27 @@
         color: var(--accent);
       }
 
+      .filters-dropdown {
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 16px;
+        width: min(1100px, 92vw);
+        max-height: min(70vh, 700px);
+        overflow: auto;
+        padding: 12px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-lg);
+        z-index: 70;
+        display: none;
+      }
+
+      .filters-dropdown.show {
+        display: block;
+      }
+
       .quick-filters {
-        max-width: 1100px;
-        margin: 12px auto 0;
-        padding: 0 16px;
         display: flex;
         flex-wrap: wrap;
         gap: 8px;
@@ -181,14 +319,12 @@
       }
       .quick-filters .chip.active {
         border-color: var(--accent-2);
-        background: rgba(255, 209, 102, 0.1);
+        background: var(--accent-2-soft);
         color: var(--accent-2);
       }
 
       .filters {
-        max-width: 1100px;
-        margin: 8px auto 0;
-        padding: 0 16px 8px;
+        margin-top: 8px;
       }
 
       .filters .panel {
@@ -221,6 +357,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        font-family: var(--font-ui);
       }
       .group summary::-webkit-details-marker {
         display: none;
@@ -247,6 +384,7 @@
         gap: 8px;
         font-size: 14px;
         cursor: pointer;
+        font-family: var(--font-ui);
       }
       .group label .count {
         margin-left: auto;
@@ -255,6 +393,7 @@
         background: var(--bg);
         padding: 0 6px;
         border-radius: 4px;
+        font-family: var(--font-ui);
       }
 
       .group input[type="checkbox"] {
@@ -281,6 +420,7 @@
         padding: 6px 10px;
         font-size: 13px;
         color: var(--muted);
+        font-family: var(--font-ui);
       }
 
       .chip button {
@@ -362,7 +502,7 @@
         display: block;
         width: 180px;
         padding: 4px 0;
-        color: #fff;
+        color: var(--on-strong);
         text-align: center;
         font-size: 10px;
         font-weight: bold;
@@ -371,7 +511,7 @@
         transform: rotate(45deg) translateY(-20px);
         right: -30px;
         top: 32px;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        box-shadow: var(--shadow);
         white-space: nowrap;
       }
       .ribbon.ok span {
@@ -385,7 +525,7 @@
       }
 
       .thumb {
-        background: #0c0e13;
+        background: var(--media-bg);
         aspect-ratio: 4 / 3;
         overflow: hidden;
       }
@@ -406,11 +546,13 @@
       .meta h3 {
         margin: 0;
         font-size: 16px;
+        font-family: var(--font-header);
       }
 
       .line {
         font-size: 13px;
         color: var(--muted);
+        font-family: var(--font-ui);
       }
 
       .empty-state {
@@ -429,6 +571,7 @@
       }
       .empty-state h3 {
         margin: 0 0 8px;
+        font-family: var(--font-header);
       }
       .empty-state p {
         margin: 0 0 16px;
@@ -457,10 +600,10 @@
         transform: translateX(-100%);
         background-image: linear-gradient(
           90deg,
-          rgba(255, 255, 255, 0) 0,
-          rgba(255, 255, 255, 0.05) 20%,
-          rgba(255, 255, 255, 0.1) 60%,
-          rgba(255, 255, 255, 0)
+          var(--shimmer-0) 0,
+          var(--shimmer-1) 20%,
+          var(--shimmer-2) 60%,
+          var(--shimmer-0)
         );
         animation: shimmer 2s infinite;
       }
@@ -479,14 +622,14 @@
         border: 1px solid var(--border);
         border-radius: var(--radius-lg);
         padding: 0;
-        background: var(--card);
+        background: var(--popup-surface);
         color: var(--text);
         box-shadow: var(--shadow-lg);
       }
 
       dialog::backdrop {
-        background: rgba(0, 0, 0, 0.6);
-        backdrop-filter: blur(4px);
+        background: var(--popup-backdrop);
+        backdrop-filter: none;
       }
 
       .modal-head {
@@ -502,6 +645,7 @@
         margin: 0;
         font-size: 18px;
         flex-grow: 1;
+        font-family: var(--font-header);
       }
 
       .modal-head .btn {
@@ -511,7 +655,7 @@
         height: 36px;
         padding: 0;
         display: flex;
-        color: white;
+        color: var(--text);
         align-items: center;
         justify-content: center;
         background: transparent;
@@ -522,7 +666,7 @@
       .modal-head .btn:hover {
         background: var(--accent);
         border-color: var(--accent);
-        color: white;
+        color: var(--on-accent);
       }
 
       .modal-head .btn .icon {
@@ -549,6 +693,7 @@
         display: flex;
         align-items: center;
         gap: 8px;
+        font-family: var(--font-header);
       }
       .kv {
         display: grid;
@@ -569,7 +714,7 @@
         padding: 10px;
         border: 1px dashed var(--border);
         border-radius: 8px;
-        background: #121520;
+        background: var(--surface-2);
         color: var(--text);
         white-space: pre-wrap;
       }
@@ -584,7 +729,7 @@
       }
       .carousel {
         position: relative;
-        background: #0c0e13;
+        background: var(--media-bg);
         border: 1px solid var(--border);
         border-radius: 12px;
         overflow: hidden;
@@ -614,17 +759,18 @@
         position: absolute;
         top: 8px;
         left: 8px;
-        background: rgba(0, 0, 0, 0.6);
+        background: var(--popup-control-bg);
         color: var(--text);
         padding: 4px 8px;
         border-radius: 6px;
         font-size: 12px;
+        font-family: var(--font-ui);
       }
       .carousel-nav {
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
-        background: rgba(0, 0, 0, 0.5);
+        background: var(--popup-control-bg);
         border: 1px solid var(--border);
         color: var(--text);
         font-size: 24px;
@@ -635,6 +781,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        font-family: var(--font-ui);
       }
       .carousel-nav.prev {
         left: 10px;
@@ -672,7 +819,7 @@
         display: none;
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.9);
+        background: var(--popup-strong-backdrop);
         z-index: 99999;
         align-items: center;
         justify-content: center;
@@ -693,9 +840,9 @@
       }
       .lightbox-btn {
         position: absolute;
-        background: rgba(0, 0, 0, 0.6);
+        background: var(--popup-control-bg);
         border: 1px solid var(--border);
-        color: white;
+        color: var(--text);
         font-size: 2rem;
         width: 50px;
         height: 50px;
@@ -704,6 +851,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        font-family: var(--font-ui);
       }
       .lightbox-close {
         top: 15px;
@@ -726,10 +874,37 @@
         padding: 0 16px;
         color: var(--muted);
         font-size: 13px;
+        font-family: var(--font-ui);
       }
       /* Alternate row background for list view */
       .grid.list-view .card:nth-child(even) {
-        background: rgba(255, 255, 255, 0.02);
+        background: var(--list-row-alt);
+      }
+
+      .theme-toggle {
+        border: 1px solid var(--border);
+        background: var(--card);
+        color: var(--text);
+        border-radius: var(--radius-sm);
+        padding: 10px 12px;
+        cursor: pointer;
+        font-family: var(--font-ui);
+      }
+
+      header .theme-toggle {
+        margin-left: auto;
+      }
+
+      @media (max-width: 900px) {
+        header .theme-toggle {
+          margin-left: 0;
+        }
+        .toolbar {
+          grid-template-columns: 1fr 1fr;
+        }
+        .filters-dropdown {
+          right: 4vw;
+        }
       }
 
       /* Make list view more compact */
@@ -773,6 +948,7 @@
         visibility: hidden;
         transition: all 0.3s ease;
         z-index: 2000;
+        font-family: var(--font-ui);
       }
       .toast.show {
         transform: translateX(-50%) translateY(0);
@@ -786,15 +962,28 @@
 
     <header>
       <div class="emblem">
-        <img src="images/logo.png" alt="Site Logo" width="40" height="40" />
+        <img
+          class="site-logo"
+          src="images/logo.png"
+          alt="Site Logo"
+          width="40"
+          height="40"
+        />
       </div>
-      <div>
+      <div class="header-main">
         <h1>H.A.G. Miniature Collection</h1>
         <div class="subtitle">
           Browse, search, and filter Hiraeth Archives & Guides' miniature
           collection.
         </div>
       </div>
+      <button
+        class="theme-toggle"
+        id="headerThemeToggleBtn"
+        aria-label="Switch theme"
+      >
+        Theme: Auto
+      </button>
     </header>
 
     <section class="toolbar">
@@ -845,13 +1034,23 @@
         </svg>
         <span>Reset</span>
       </button>
-    </section>
+      <button
+        class="btn"
+        id="filtersToggleBtn"
+        aria-label="Toggle filters"
+        aria-expanded="false"
+        aria-controls="filtersDropdown"
+      >
+        Filters
+      </button>
 
-    <section class="quick-filters" id="quickFilters"></section>
-
-    <section class="filters">
-      <div class="panel">
-        <div class="groups" id="filterGroups"></div>
+      <div id="filtersDropdown" class="filters-dropdown" hidden>
+        <section class="quick-filters" id="quickFilters"></section>
+        <section class="filters">
+          <div class="panel">
+            <div class="groups" id="filterGroups"></div>
+          </div>
+        </section>
       </div>
     </section>
 
@@ -928,6 +1127,7 @@
     <script>
       const DATA_URL = "data/minis.json";
       const STORAGE_KEY = "miniGalleryStateV2";
+      const THEME_STORAGE_KEY = "hiraeth-theme";
 
       const collator = new Intl.Collator(undefined, {
         numeric: true,
@@ -938,6 +1138,7 @@
         query: "",
         sortBy: "name-asc",
         viewMode: "grid",
+        filtersOpen: false,
         quickFilter: null,
         filters: {
           type: new Set(),
@@ -966,31 +1167,87 @@
       const el = (sel) => document.querySelector(sel);
       const els = (sel) => [...document.querySelectorAll(sel)];
 
+      const cssVar = (name) =>
+        getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+      let PLACEHOLDER_SVG = "";
+
+      function buildPlaceholderSvg() {
+        const start = cssVar("--surface-2");
+        const end = cssVar("--media-bg");
+        const stroke = cssVar("--border");
+        const text = cssVar("--muted");
+        const svg =
+          "<svg xmlns='http://www.w3.org/2000/svg' width='480' " +
+          "height='360' viewBox='0 0 480 360'>" +
+          "<defs><linearGradient id='g' x1='0' x2='1'>" +
+          `<stop offset='0' stop-color='${start}'/>` +
+          `<stop offset='1' stop-color='${end}'/></linearGradient></defs>` +
+          "<rect width='100%' height='100%' fill='url(#g)'/>" +
+          `<g fill='none' stroke='${stroke}' stroke-width='2'>` +
+          "<rect x='24' y='24' width='432' height='312' " +
+          "rx='16' ry='16'/>" +
+          "<path d='M80 260l70-90 60 70 50-60 70 80'/>" +
+          "<circle cx='140' cy='110' r='22'/></g>" +
+          "<text x='50%' y='50%' dominant-baseline='middle' " +
+          `text-anchor='middle' fill='${text}' font-family='system-ui' ` +
+          "font-size='20'>No image</text></svg>";
+        return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
+      }
+
+      function refreshPlaceholderSvg() {
+        PLACEHOLDER_SVG = buildPlaceholderSvg();
+      }
+
+      function resolveTheme() {
+        let saved = null;
+        try {
+          saved = localStorage.getItem(THEME_STORAGE_KEY);
+        } catch {}
+        if (saved === "light" || saved === "dark") return saved;
+        return window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+      }
+
+      function updateThemeToggleUI() {
+        const theme = document.documentElement.getAttribute("data-theme");
+        const nextLabel =
+          theme === "dark" ? "Switch to light mode" : "Switch to dark mode";
+        const btn = el("#headerThemeToggleBtn");
+        if (!btn) return;
+        btn.textContent = `Theme: ${theme === "dark" ? "Dark" : "Light"}`;
+        btn.setAttribute("aria-label", nextLabel);
+      }
+
+      function applyTheme(theme, options = {}) {
+        const { persist = true } = options;
+        document.documentElement.setAttribute("data-theme", theme);
+        if (persist) {
+          try {
+            localStorage.setItem(THEME_STORAGE_KEY, theme);
+          } catch {}
+        }
+        refreshPlaceholderSvg();
+        updateThemeToggleUI();
+      }
+
+      function toggleTheme() {
+        const curr = document.documentElement.getAttribute("data-theme");
+        applyTheme(curr === "dark" ? "light" : "dark");
+        applyAndRender();
+      }
+
+      function initTheme() {
+        applyTheme(resolveTheme(), { persist: false });
+      }
+
       const ICONS = {
         grid: '<svg class="icon" viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>',
         list: '<svg class="icon" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>',
         chevron:
           '<svg class="icon chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>',
       };
-
-      const PLACEHOLDER_SVG = (() => {
-        const svg =
-          "<svg xmlns='http://www.w3.org/2000/svg' width='480' " +
-          "height='360' viewBox='0 0 480 360'>" +
-          "<defs><linearGradient id='g' x1='0' x2='1'>" +
-          "<stop offset='0' stop-color='#121520'/>" +
-          "<stop offset='1' stop-color='#0b0d13'/></linearGradient></defs>" +
-          "<rect width='100%' height='100%' fill='url(#g)'/>" +
-          "<g fill='none' stroke='#2a3146' stroke-width='2'>" +
-          "<rect x='24' y='24' width='432' height='312' " +
-          "rx='16' ry='16'/>" +
-          "<path d='M80 260l70-90 60 70 50-60 70 80'/>" +
-          "<circle cx='140' cy='110' r='22'/></g>" +
-          "<text x='50%' y='50%' dominant-baseline='middle' " +
-          "text-anchor='middle' fill='#5a6786' font-family='system-ui' " +
-          "font-size='20'>No image</text></svg>";
-        return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
-      })();
 
       let toastTimeout;
       function showToast(msg, isError = false) {
@@ -1059,6 +1316,7 @@
       }
 
       async function init() {
+        initTheme();
         renderSkeletons();
         showProgress(20);
         await loadData();
@@ -1091,7 +1349,7 @@
             const miniId = params.get("id");
             if (miniId) {
                 const targetMini = allMinis.find(
-                    (m) => m.id.toLowerCase() === decodeURIComponent(miniId).toLowerCase()
+                    (m) => m.id.toLowerCase() === miniId.toLowerCase()
                 );
                 if (targetMini) {
                     setTimeout(() => openDetail(targetMini), 50);
@@ -1290,11 +1548,32 @@
         );
         el("#randomBtn").addEventListener("click", () => randomSelect());
         el("#viewModeBtn").addEventListener("click", () => toggleViewMode());
+        el("#filtersToggleBtn").addEventListener("click", (e) => {
+          e.stopPropagation();
+          setFiltersDropdownOpen(!state.filtersOpen);
+        });
+        el("#headerThemeToggleBtn").addEventListener("click", () =>
+          toggleTheme()
+        );
         el("#closeDialogBtn").addEventListener("click", () =>
           el("#detailDialog").close()
         );
+        el("#filtersDropdown").addEventListener("click", (e) =>
+          e.stopPropagation()
+        );
+        document.addEventListener("click", (e) => {
+          const btn = el("#filtersToggleBtn");
+          const dropdown = el("#filtersDropdown");
+          if (!state.filtersOpen || !btn || !dropdown) return;
+          if (btn.contains(e.target) || dropdown.contains(e.target)) return;
+          setFiltersDropdownOpen(false);
+        });
         window.addEventListener("keydown", (e) => {
           if (e.key === "Escape") {
+            if (state.filtersOpen) {
+              setFiltersDropdownOpen(false);
+              return;
+            }
             if (el("#lightbox").classList.contains("show")) {
               closeLightbox();
             } else {
@@ -1302,6 +1581,16 @@
             }
           }
         });
+      }
+
+      function setFiltersDropdownOpen(open) {
+        state.filtersOpen = Boolean(open);
+        const dropdown = el("#filtersDropdown");
+        const btn = el("#filtersToggleBtn");
+        if (!dropdown || !btn) return;
+        dropdown.classList.toggle("show", state.filtersOpen);
+        dropdown.hidden = !state.filtersOpen;
+        btn.setAttribute("aria-expanded", state.filtersOpen ? "true" : "false");
       }
 
       function resetState() {

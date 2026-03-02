@@ -12,20 +12,86 @@
       content="Local editor for D&D minis data. Load, edit, and export
       data/minis.json to commit to GitHub."
     />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=EB+Garamond:ital,wght@0,400;0,700;1,400;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Quattrocento:wght@400;700&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      (() => {
+        const key = "hiraeth-theme";
+        let saved = null;
+        try {
+          saved = localStorage.getItem(key);
+        } catch {}
+        const systemDark = window.matchMedia(
+          "(prefers-color-scheme: dark)"
+        ).matches;
+        const theme = saved === "light" || saved === "dark"
+          ? saved
+          : systemDark
+          ? "dark"
+          : "light";
+        document.documentElement.setAttribute("data-theme", theme);
+      })();
+    </script>
     <style>
       :root {
-        --bg: #0f1115;
-        --panel: #171a21;
-        --muted: #a9b1bd;
-        --text: #e6eaf0;
-        --accent: #72a1ff;
-        --accent-2: #ffd166;
-        --border: #232737;
-        --chip: #1f2330;
-        --shadow: 0 1px 2px rgba(0, 0, 0, 0.2),
-          0 8px 24px rgba(0, 0, 0, 0.12);
+        --bg: #f2f2f2;
+        --panel: rgba(255, 255, 255, 0.85);
+        --surface-2: rgba(248, 245, 241, 0.7);
+        --input-bg: rgba(255, 255, 255, 0.9);
+        --muted: #61656a;
+        --text: #2f3133;
+        --primary: #7a2f26;
+        --link: #bc9d76;
+        --shelf: #aa5a32;
+        --book: #4d7f4a;
+        --chapter: #cfa067;
+        --page: #c09054;
+        --page-draft: #51407c;
+        --accent: var(--link);
+        --accent-2: var(--chapter);
+        --ok: var(--book);
+        --warn: var(--chapter);
+        --danger: var(--shelf);
+        --border: rgba(216, 216, 216, 0.6);
+        --chip: var(--surface-2);
+        --shadow: 0 12px 40px rgba(20, 18, 16, 0.08);
         --radius: 12px;
         --radius-sm: 8px;
+        --font-header: "IM Fell English SC", serif;
+        --font-body: "Cormorant Garamond", "EB Garamond", "Libre Baskerville",
+          "Quattrocento", "Source Sans 3", serif;
+        --font-ui: "Source Sans 3", system-ui, -apple-system, "Segoe UI",
+          sans-serif;
+      }
+
+      html[data-theme="dark"] {
+        --bg: #151618;
+        --panel: rgba(38, 41, 46, 0.65);
+        --surface-2: rgba(30, 32, 36, 0.6);
+        --input-bg: rgba(30, 32, 36, 0.92);
+        --muted: #b2b5bc;
+        --text: #e6e7ea;
+        --primary: #8e8abf;
+        --link: #8380e2;
+        --shelf: #f43d5a;
+        --book: #16c4a1;
+        --chapter: #e9ad4a;
+        --page: #4aa1d8;
+        --page-draft: #9a63db;
+        --accent: var(--link);
+        --accent-2: var(--chapter);
+        --ok: var(--book);
+        --warn: var(--chapter);
+        --danger: var(--shelf);
+        --border: rgba(58, 62, 70, 0.6);
+        --chip: var(--surface-2);
+        --shadow: 0 15px 45px rgba(0, 0, 0, 0.5);
       }
 
       * {
@@ -38,8 +104,15 @@
         padding: 0;
         background: var(--bg);
         color: var(--text);
-        font: 500 15px/1.5 system-ui, Segoe UI, Roboto, Ubuntu, Cantarell,
-          Noto Sans, Arial;
+        font: 500 15px/1.5 var(--font-body);
+      }
+
+      button,
+      input,
+      select,
+      textarea,
+      label {
+        font-family: var(--font-ui);
       }
 
       header {
@@ -53,11 +126,13 @@
         margin: 0;
         font-size: 22px;
         letter-spacing: 0.2px;
+        font-family: var(--font-header);
       }
 
       header .muted {
         color: var(--muted);
         font-size: 13px;
+        font-family: var(--font-ui);
       }
 
       main {
@@ -100,12 +175,12 @@
       textarea {
         width: 100%;
         padding: 8px 10px;
-        background: #121520;
+        background: var(--input-bg);
         border: 1px solid var(--border);
         border-radius: 8px;
         color: var(--text);
         outline: none;
-        font-family: inherit;
+        font-family: var(--font-ui);
         font-size: 14px;
       }
 
@@ -118,27 +193,28 @@
         padding: 8px 10px;
         border-radius: 8px;
         border: 1px solid var(--border);
-        background: #121520;
+        background: var(--input-bg);
         color: var(--text);
         cursor: pointer;
+        font-family: var(--font-ui);
       }
 
       .btn.primary {
-        background: #1b2132;
-        border-color: #2a3655;
+        background: var(--surface-2);
+        border-color: var(--accent);
         color: var(--text);
       }
 
       .btn.warn {
-        border-color: #5e3c00;
-        background: #251d0c;
-        color: #ffd166;
+        border-color: var(--warn);
+        background: var(--surface-2);
+        color: var(--warn);
       }
 
       .btn.danger {
-        border-color: #5a2323;
-        background: #2a1515;
-        color: #ff6b6b;
+        border-color: var(--danger);
+        background: var(--surface-2);
+        color: var(--danger);
       }
 
       .toolbar,
@@ -151,6 +227,7 @@
       .small {
         font-size: 12px;
         color: var(--muted);
+        font-family: var(--font-ui);
       }
 
       .list {
@@ -163,10 +240,11 @@
 
       .item {
         border: 1px solid var(--border);
-        background: #121520;
+        background: var(--input-bg);
         border-radius: 8px;
         padding: 8px;
         cursor: pointer;
+        font-family: var(--font-ui);
       }
 
       .item.active {
@@ -191,6 +269,7 @@
         padding-bottom: 4px;
         border-bottom: 1px dashed var(--border);
         margin-bottom: 8px;
+        font-family: var(--font-header);
       }
 
       .pill {
@@ -203,6 +282,7 @@
         padding: 4px 8px;
         font-size: 12px;
         color: var(--muted);
+        font-family: var(--font-ui);
       }
 
       .kv {
@@ -210,6 +290,7 @@
         grid-template-columns: 120px 1fr;
         gap: 6px 10px;
         font-size: 13px;
+        font-family: var(--font-ui);
       }
 
       .kv div {
@@ -217,13 +298,20 @@
       }
 
       .danger-note {
-        color: #ff6b6b;
+        color: var(--danger);
         font-size: 13px;
+        font-family: var(--font-ui);
       }
 
       .ok-note {
-        color: #7bd88f;
+        color: var(--ok);
         font-size: 13px;
+        font-family: var(--font-ui);
+      }
+
+      .theme-toggle {
+        border-color: var(--border);
+        background: var(--panel);
       }
     </style>
   </head>
@@ -239,6 +327,7 @@
         <span id="summary" class="pill">0 minis</span>
         <span id="dirty" class="pill">Saved</span>
         <span id="ls" class="pill">Local backup: none</span>
+        <button id="themeToggleBtn" class="btn theme-toggle">Theme: Auto</button>
       </div>
     </header>
 
@@ -541,6 +630,7 @@
 
     <script>
       const LS_KEY = "minisEditorBackupV2";
+      const THEME_STORAGE_KEY = "hiraeth-theme";
 
       let minis = [];
       let selectedId = null;
@@ -554,10 +644,48 @@
         sensitivity: "base",
       });
 
+      function resolveTheme() {
+        let saved = null;
+        try {
+          saved = localStorage.getItem(THEME_STORAGE_KEY);
+        } catch {}
+        if (saved === "light" || saved === "dark") return saved;
+        return window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+      }
+
+      function updateThemeToggleUI() {
+        const btn = $("#themeToggleBtn");
+        if (!btn) return;
+        const theme = document.documentElement.getAttribute("data-theme");
+        btn.textContent = `Theme: ${theme === "dark" ? "Dark" : "Light"}`;
+      }
+
+      function applyTheme(theme, options = {}) {
+        const { persist = true } = options;
+        document.documentElement.setAttribute("data-theme", theme);
+        if (persist) {
+          try {
+            localStorage.setItem(THEME_STORAGE_KEY, theme);
+          } catch {}
+        }
+        updateThemeToggleUI();
+      }
+
+      function toggleTheme() {
+        const curr = document.documentElement.getAttribute("data-theme");
+        applyTheme(curr === "dark" ? "light" : "dark");
+      }
+
+      function initTheme() {
+        applyTheme(resolveTheme(), { persist: false });
+      }
+
       function setDirty(d) {
         isDirty = d;
         $("#dirty").textContent = d ? "Unsaved changes" : "Saved";
-        $("#dirty").style.color = d ? "#ffd166" : "inherit";
+        $("#dirty").style.color = d ? "var(--warn)" : "inherit";
       }
 
       function summary() {
@@ -1139,6 +1267,7 @@
       $("#exportBtn").addEventListener("click", () => exportJson(false));
       $("#exportTsBtn").addEventListener("click", () => exportJson(true));
       $("#validateBtn").addEventListener("click", validateAll);
+      $("#themeToggleBtn").addEventListener("click", toggleTheme);
 
       // Mark dirty on any form change
       for (const id of [
@@ -1174,6 +1303,7 @@
       }
 
       // Helpful default
+      initTheme();
       $("#urlInput").value = "data/minis.json";
       summary();
       setDirty(false);
