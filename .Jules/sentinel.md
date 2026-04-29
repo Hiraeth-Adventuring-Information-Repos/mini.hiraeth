@@ -1,0 +1,4 @@
+## 2024-04-29 - [Fix XSS vulnerability in HTML templates]
+**Vulnerability:** Cross-Site Scripting (XSS) vulnerability found in `index.html`. The application was rendering user-controlled data directly to the DOM using `.innerHTML` without proper sanitization. The data from `data/minis.json` (such as `m.name`, `m.type`, etc.) was being injected in `renderGrid`, `openDetail`, and `setupCarousel`.
+**Learning:** Vanilla HTML applications lacking a templating engine or framework often fall victim to XSS vulnerabilities due to manual DOM manipulation via `.innerHTML`. A sanitization step is necessary.
+**Prevention:** Avoid using `.innerHTML` with user-supplied data unless strictly required. Use `.textContent` when possible. When `.innerHTML` is necessary, define and use a sanitization function such as `escapeHtml()` to ensure strings are safely encoded by replacing characters like `&`, `<`, `>`, `"`, and `'` with HTML entities.

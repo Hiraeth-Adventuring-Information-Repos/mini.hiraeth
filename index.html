@@ -1129,6 +1129,15 @@
       const STORAGE_KEY = "miniGalleryStateV2";
       const THEME_STORAGE_KEY = "hiraeth-theme";
 
+      function escapeHtml(s) {
+        return String(s || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
       const collator = new Intl.Collator(undefined, {
         numeric: true,
         sensitivity: "base",
@@ -1765,20 +1774,20 @@
             // More compact + extra info
             card.innerHTML = `
         <div class="thumb">
-          <img loading="lazy" src="${firstImage}" alt="${m.name}" 
+          <img loading="lazy" src="${escapeHtml(firstImage)}" alt="${escapeHtml(m.name)}"
                onerror="this.src='${PLACEHOLDER_SVG}'">
         </div>
         <div class="meta">
-          <h3>${m.name}</h3>
-          <div class="line">${[m.type, m.size, m.usage.role]
+          <h3>${escapeHtml(m.name)}</h3>
+          <div class="line">${escapeHtml([m.type, m.size, m.usage.role]
             .filter(Boolean)
-            .join(" • ")}</div>
+            .join(" • "))}</div>
           <div class="extra">
-            ${m.paint.status ? `Paint: ${m.paint.status}` : ""}
-            ${m.paint.date ? ` • Painted: ${m.paint.date}` : ""}
+            ${m.paint.status ? `Paint: ${escapeHtml(m.paint.status)}` : ""}
+            ${m.paint.date ? ` • Painted: ${escapeHtml(m.paint.date)}` : ""}
             ${
               m.source.acquisition_date
-                ? ` • Acquired: ${m.source.acquisition_date}`
+                ? ` • Acquired: ${escapeHtml(m.source.acquisition_date)}`
                 : ""
             }
           </div>
@@ -1788,24 +1797,24 @@
             // Original grid/tile view
             card.innerHTML = `
         <div class="ribbon ${paintStatusClass}"><span>${
-              m.paint.status || "Unknown"
+              escapeHtml(m.paint.status) || "Unknown"
             }</span></div>
         <div class="thumb">
-          <img loading="lazy" src="${firstImage}" alt="${m.name}" 
+          <img loading="lazy" src="${escapeHtml(firstImage)}" alt="${escapeHtml(m.name)}"
                onerror="this.src='${PLACEHOLDER_SVG}'">
         </div>
         <div class="meta">
-          <h3>${m.name}</h3>
-          <div class="line">${[m.type, m.size, m.usage.role]
+          <h3>${escapeHtml(m.name)}</h3>
+          <div class="line">${escapeHtml([m.type, m.size, m.usage.role]
             .filter(Boolean)
-            .join(" • ")}</div>
-          <div class="line">${[
+            .join(" • "))}</div>
+          <div class="line">${escapeHtml([
             m.source.manufacturer,
             `Painter: ${m.paint.painter || "—"}`,
             m.location.room || m.location.storage,
           ]
             .filter(Boolean)
-            .join(" • ")}</div>
+            .join(" • "))}</div>
         </div>
       `;
           }
@@ -1970,7 +1979,7 @@
             const kvEl = document.createElement("div");
             kvEl.className = "kv";
             for (const [k, v] of groupData) {
-              kvEl.innerHTML += `<div class="k">${k}</div><div>${v}</div>`;
+              kvEl.innerHTML += `<div class="k">${escapeHtml(k)}</div><div>${escapeHtml(v)}</div>`;
             }
             groupEl.appendChild(kvEl);
             detailContent.appendChild(groupEl);
@@ -2024,8 +2033,8 @@
           const slide = document.createElement("div");
           slide.className = "carousel-slide";
           slide.innerHTML = `
-            <img loading="lazy" src="${imgData.src}" alt="${m.name} - ${imgData.label}" onerror="this.src='${PLACEHOLDER_SVG}'">
-            <div class="carousel-label">${imgData.label}</div>
+            <img loading="lazy" src="${escapeHtml(imgData.src)}" alt="${escapeHtml(m.name)} - ${escapeHtml(imgData.label)}" onerror="this.src='${PLACEHOLDER_SVG}'">
+            <div class="carousel-label">${escapeHtml(imgData.label)}</div>
           `;
           slide
             .querySelector("img")
@@ -2035,7 +2044,7 @@
           const thumb = document.createElement("div");
           thumb.className = "filmstrip-thumb";
           thumb.dataset.index = index;
-          thumb.innerHTML = `<img src="${imgData.src}" alt="Thumbnail ${
+          thumb.innerHTML = `<img src="${escapeHtml(imgData.src)}" alt="Thumbnail ${
             index + 1
           }" onerror="this.src='${PLACEHOLDER_SVG}'">`;
           thumb.addEventListener("click", () => {
