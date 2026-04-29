@@ -1,0 +1,3 @@
+## 2024-05-20 - [Optimize Search Text Generation]
+**Learning:** Found a performance bottleneck in the filtering logic where dynamic string concatenation and lowercasing were computed on the fly for every single item on every keystroke. In a Vanilla JS app with a decent dataset size, these redundant string operations cause unnecessary CPU load, GC pauses, and UI lag.
+**Action:** When filtering a static or infrequently changing dataset based on text searches, always precompute and cache the searchable text representations (e.g. joining and lowercasing all searchable fields once during initialization) rather than computing them on the fly.

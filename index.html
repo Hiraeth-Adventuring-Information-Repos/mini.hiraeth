@@ -1378,7 +1378,7 @@
           return [];
         };
 
-        return {
+        const normalized = {
           id: safe(m.id),
           name: safe(m.name),
           type: safe(m.type),
@@ -1417,6 +1417,27 @@
           tags: toArray(m?.tags),
           notes: safe(m?.notes),
         };
+
+        // Cache searchable text to avoid O(n) array operations on every keystroke
+        normalized._searchText = [
+          normalized.name,
+          normalized.type,
+          normalized.size,
+          normalized.source.manufacturer,
+          normalized.source.set,
+          normalized.source.origin_type,
+          normalized.location.room,
+          normalized.location.storage,
+          normalized.paint.status,
+          normalized.paint.painter,
+          normalized.notes,
+          ...normalized.tags,
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+
+        return normalized;
       }
 
       function buildUniqueOptions() {
@@ -1667,26 +1688,7 @@
         const has = (set, v) => (set.size === 0 ? true : set.has(v));
 
         return minis.filter((m) => {
-          const text =
-            [
-              m.name,
-              m.type,
-              m.size,
-              m.source.manufacturer,
-              m.source.set,
-              m.source.origin_type,
-              m.location.room,
-              m.location.storage,
-              m.paint.status,
-              m.paint.painter,
-              m.notes,
-              ...(m.tags || []),
-            ]
-              .filter(Boolean)
-              .join(" ")
-              .toLowerCase() || "";
-
-          const matchesQuery = q ? text.includes(q) : true;
+          const matchesQuery = q ? (m._searchText || "").includes(q) : true;
 
           const matchesFilters =
             has(f.type, m.type) &&
@@ -1823,24 +1825,7 @@
         const baseSet = allMinis.filter((m) => {
           const q = state.query.toLowerCase();
           if (!q) return true;
-          const text = [
-            m.name,
-            m.type,
-            m.size,
-            m.source.manufacturer,
-            m.source.set,
-            m.source.origin_type,
-            m.location.room,
-            m.location.storage,
-            m.paint.status,
-            m.paint.painter,
-            m.notes,
-            ...(m.tags || []),
-          ]
-            .filter(Boolean)
-            .join(" ")
-            .toLowerCase();
-          return text.includes(q);
+          return (m._searchText || "").includes(q);
         });
 
         for (const key of Object.keys(uniqueOptions)) {
