@@ -1116,7 +1116,7 @@
 
     <!-- FIXED: Lightbox is outside the dialog to be truly full-screen -->
     <div id="lightbox" class="lightbox">
-      <button class="lightbox-btn lightbox-close" aria-label="Close fullscreen">✕</button>
+      <button class="lightbox-btn lightbox-close" aria-label="Close full-screen">✕</button>
       <button class="lightbox-btn lightbox-prev" aria-label="Previous image">‹</button>
       <img id="lightboxImg" class="lightbox-img" src="" alt="Zoomed mini" />
       <button class="lightbox-btn lightbox-next" aria-label="Next image">›</button>
@@ -1128,6 +1128,15 @@
       const DATA_URL = "data/minis.json";
       const STORAGE_KEY = "miniGalleryStateV2";
       const THEME_STORAGE_KEY = "hiraeth-theme";
+
+      function escapeHtml(s) {
+        return String(s || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
 
       const collator = new Intl.Collator(undefined, {
         numeric: true,
@@ -1378,7 +1387,7 @@
           return [];
         };
 
-        return {
+        const normalized = {
           id: safe(m.id),
           name: safe(m.name),
           type: safe(m.type),
@@ -1417,6 +1426,27 @@
           tags: toArray(m?.tags),
           notes: safe(m?.notes),
         };
+
+        // Cache searchable text to avoid O(n) array operations on every keystroke
+        normalized._searchText = [
+          normalized.name,
+          normalized.type,
+          normalized.size,
+          normalized.source.manufacturer,
+          normalized.source.set,
+          normalized.source.origin_type,
+          normalized.location.room,
+          normalized.location.storage,
+          normalized.paint.status,
+          normalized.paint.painter,
+          normalized.notes,
+          ...normalized.tags,
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+
+        return normalized;
       }
 
       function buildUniqueOptions() {
@@ -1667,26 +1697,7 @@
         const has = (set, v) => (set.size === 0 ? true : set.has(v));
 
         return minis.filter((m) => {
-          const text =
-            [
-              m.name,
-              m.type,
-              m.size,
-              m.source.manufacturer,
-              m.source.set,
-              m.source.origin_type,
-              m.location.room,
-              m.location.storage,
-              m.paint.status,
-              m.paint.painter,
-              m.notes,
-              ...(m.tags || []),
-            ]
-              .filter(Boolean)
-              .join(" ")
-              .toLowerCase() || "";
-
-          const matchesQuery = q ? text.includes(q) : true;
+          const matchesQuery = q ? (m._searchText || "").includes(q) : true;
 
           const matchesFilters =
             has(f.type, m.type) &&
@@ -1765,20 +1776,20 @@
             // More compact + extra info
             card.innerHTML = `
         <div class="thumb">
-          <img loading="lazy" src="${firstImage}" alt="${m.name}" 
+          <img loading="lazy" src="${escapeHtml(firstImage)}" alt="${escapeHtml(m.name)}"
                onerror="this.src='${PLACEHOLDER_SVG}'">
         </div>
         <div class="meta">
-          <h3>${m.name}</h3>
-          <div class="line">${[m.type, m.size, m.usage.role]
+          <h3>${escapeHtml(m.name)}</h3>
+          <div class="line">${escapeHtml([m.type, m.size, m.usage.role]
             .filter(Boolean)
-            .join(" • ")}</div>
+            .join(" • "))}</div>
           <div class="extra">
-            ${m.paint.status ? `Paint: ${m.paint.status}` : ""}
-            ${m.paint.date ? ` • Painted: ${m.paint.date}` : ""}
+            ${m.paint.status ? `Paint: ${escapeHtml(m.paint.status)}` : ""}
+            ${m.paint.date ? ` • Painted: ${escapeHtml(m.paint.date)}` : ""}
             ${
               m.source.acquisition_date
-                ? ` • Acquired: ${m.source.acquisition_date}`
+                ? ` • Acquired: ${escapeHtml(m.source.acquisition_date)}`
                 : ""
             }
           </div>
@@ -1788,24 +1799,24 @@
             // Original grid/tile view
             card.innerHTML = `
         <div class="ribbon ${paintStatusClass}"><span>${
-              m.paint.status || "Unknown"
+              escapeHtml(m.paint.status) || "Unknown"
             }</span></div>
         <div class="thumb">
-          <img loading="lazy" src="${firstImage}" alt="${m.name}" 
+          <img loading="lazy" src="${escapeHtml(firstImage)}" alt="${escapeHtml(m.name)}"
                onerror="this.src='${PLACEHOLDER_SVG}'">
         </div>
         <div class="meta">
-          <h3>${m.name}</h3>
-          <div class="line">${[m.type, m.size, m.usage.role]
+          <h3>${escapeHtml(m.name)}</h3>
+          <div class="line">${escapeHtml([m.type, m.size, m.usage.role]
             .filter(Boolean)
-            .join(" • ")}</div>
-          <div class="line">${[
+            .join(" • "))}</div>
+          <div class="line">${escapeHtml([
             m.source.manufacturer,
             `Painter: ${m.paint.painter || "—"}`,
             m.location.room || m.location.storage,
           ]
             .filter(Boolean)
-            .join(" • ")}</div>
+            .join(" • "))}</div>
         </div>
       `;
           }
@@ -1823,24 +1834,7 @@
         const baseSet = allMinis.filter((m) => {
           const q = state.query.toLowerCase();
           if (!q) return true;
-          const text = [
-            m.name,
-            m.type,
-            m.size,
-            m.source.manufacturer,
-            m.source.set,
-            m.source.origin_type,
-            m.location.room,
-            m.location.storage,
-            m.paint.status,
-            m.paint.painter,
-            m.notes,
-            ...(m.tags || []),
-          ]
-            .filter(Boolean)
-            .join(" ")
-            .toLowerCase();
-          return text.includes(q);
+          return (m._searchText || "").includes(q);
         });
 
         for (const key of Object.keys(uniqueOptions)) {
@@ -1970,7 +1964,7 @@
             const kvEl = document.createElement("div");
             kvEl.className = "kv";
             for (const [k, v] of groupData) {
-              kvEl.innerHTML += `<div class="k">${k}</div><div>${v}</div>`;
+              kvEl.innerHTML += `<div class="k">${escapeHtml(k)}</div><div>${escapeHtml(v)}</div>`;
             }
             groupEl.appendChild(kvEl);
             detailContent.appendChild(groupEl);
@@ -2024,8 +2018,8 @@
           const slide = document.createElement("div");
           slide.className = "carousel-slide";
           slide.innerHTML = `
-            <img loading="lazy" src="${imgData.src}" alt="${m.name} - ${imgData.label}" onerror="this.src='${PLACEHOLDER_SVG}'">
-            <div class="carousel-label">${imgData.label}</div>
+            <img loading="lazy" src="${escapeHtml(imgData.src)}" alt="${escapeHtml(m.name)} - ${escapeHtml(imgData.label)}" onerror="this.src='${PLACEHOLDER_SVG}'">
+            <div class="carousel-label">${escapeHtml(imgData.label)}</div>
           `;
           slide
             .querySelector("img")
@@ -2035,7 +2029,7 @@
           const thumb = document.createElement("div");
           thumb.className = "filmstrip-thumb";
           thumb.dataset.index = index;
-          thumb.innerHTML = `<img src="${imgData.src}" alt="Thumbnail ${
+          thumb.innerHTML = `<img src="${escapeHtml(imgData.src)}" alt="Thumbnail ${
             index + 1
           }" onerror="this.src='${PLACEHOLDER_SVG}'">`;
           thumb.addEventListener("click", () => {
