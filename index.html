@@ -1559,9 +1559,14 @@
       }
 
       function wireControls() {
+        let searchTimeout;
         el("#search").addEventListener("input", (e) => {
-          state.query = e.target.value.trim();
-          applyAndRender();
+          clearTimeout(searchTimeout);
+          // ⚡ Bolt: Debounce search input to prevent expensive filtering and DOM updates on every keystroke
+          searchTimeout = setTimeout(() => {
+            state.query = e.target.value.trim();
+            applyAndRender();
+          }, 250);
         });
         el("#sortBy").addEventListener("change", (e) => {
           state.sortBy = e.target.value;
