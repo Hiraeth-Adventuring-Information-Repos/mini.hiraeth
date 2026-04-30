@@ -1103,8 +1103,8 @@
         <div class="carousel-container">
           <div class="carousel">
             <div class="carousel-track" id="carouselTrack"></div>
-            <button class="carousel-nav prev" id="carouselPrev">‹</button>
-            <button class="carousel-nav next" id="carouselNext">›</button>
+            <button class="carousel-nav prev" id="carouselPrev" aria-label="Previous image">‹</button>
+            <button class="carousel-nav next" id="carouselNext" aria-label="Next image">›</button>
           </div>
           <div class="carousel-filmstrip" id="carouselFilmstrip"></div>
         </div>
@@ -1116,10 +1116,10 @@
 
     <!-- FIXED: Lightbox is outside the dialog to be truly full-screen -->
     <div id="lightbox" class="lightbox">
-      <button class="lightbox-btn lightbox-close">✕</button>
-      <button class="lightbox-btn lightbox-prev">‹</button>
+      <button class="lightbox-btn lightbox-close" aria-label="Close full-screen">✕</button>
+      <button class="lightbox-btn lightbox-prev" aria-label="Previous image">‹</button>
       <img id="lightboxImg" class="lightbox-img" src="" alt="Zoomed mini" />
-      <button class="lightbox-btn lightbox-next">›</button>
+      <button class="lightbox-btn lightbox-next" aria-label="Next image">›</button>
     </div>
 
     <footer>This site is part of the H.A.G.</footer>
