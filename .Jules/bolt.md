@@ -4,3 +4,9 @@
 ## 2024-05-20 - [Debounce Search Input]
 **Learning:** In a vanilla JS application that renders an entire DOM grid based on filter state, attaching synchronous `applyAndRender()` to a raw `'input'` event causes jank. Every keystroke triggers a full array filter + DOM rebuild.
 **Action:** When working with vanilla JS inputs that trigger expensive layout/filtering logic, wrap the logic in a debounce wrapper (e.g. `clearTimeout` / `setTimeout`) to batch updates, especially if there isn't a framework doing it automatically.
+## 2026-05-01 - [Optimize Filtering and DOM Rendering]
+**Learning:** Found significant performance bottlenecks in the hot path of the Vanilla JS filtering and rendering logic. The filter function was executing expensive set lookups even when a text search had already failed for an item. The rendering logic was also appending nodes to the DOM one by one, causing layout thrashing.
+**Action:** Always short-circuit expensive logic (like Set lookups) using early returns. For DOM manipulation, batch insertions using `DocumentFragment` to prevent unnecessary layout recalcs, and hoist loop invariants outside of  maps to avoid redundant operations.
+## 2024-05-20 - [Optimize Filtering and DOM Rendering]
+**Learning:** Found significant performance bottlenecks in the hot path of the Vanilla JS filtering and rendering logic. The filter function was executing expensive set lookups even when a text search had already failed for an item. The rendering logic was also appending nodes to the DOM one by one, causing layout thrashing.
+**Action:** Always short-circuit expensive logic (like Set lookups) using early returns. For DOM manipulation, batch insertions using `DocumentFragment` to prevent unnecessary layout recalcs, and hoist loop invariants outside of `.filter()` maps to avoid redundant operations.
