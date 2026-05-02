@@ -6,6 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; connect-src 'self' https:;" />
     <title>D&D Miniature Collection</title>
     <meta
       name="description"
@@ -1427,6 +1428,10 @@
           notes: safe(m?.notes),
         };
 
+        // ⚡ Bolt: Cache parsed dates to avoid expensive string parsing inside sort comparator (O(n log n) operations per sort)
+        normalized._acqTime = normalized.source.acquisition_date ? Date.parse(normalized.source.acquisition_date) || 0 : 0;
+        normalized._paintTime = normalized.paint.date ? Date.parse(normalized.paint.date) || 0 : 0;
+
         // Cache searchable text to avoid O(n) array operations on every keystroke
         normalized._searchText = [
           normalized.name,
@@ -1481,7 +1486,9 @@
           { label: "Needs Repair", key: "repair" },
         ];
         for (const f of filters) {
-          const chip = document.createElement("div");
+          const chip = document.createElement("button");
+          chip.type = "button";
+          chip.setAttribute("aria-pressed", "false");
           chip.className = "chip";
           chip.textContent = f.label;
           chip.dataset.key = f.key;
@@ -1736,20 +1743,13 @@
       }
 
       function sortMinis(minis, by) {
-        const toTime = (s) => (s ? Date.parse(s) || 0 : 0);
         const get = {
           "name-asc": (a, b) => collator.compare(a.name, b.name),
           "name-desc": (a, b) => collator.compare(b.name, a.name),
-          "acq-new": (a, b) =>
-            toTime(b.source.acquisition_date) -
-            toTime(a.source.acquisition_date),
-          "acq-old": (a, b) =>
-            toTime(a.source.acquisition_date) -
-            toTime(b.source.acquisition_date),
-          "paint-new": (a, b) =>
-            toTime(b.paint.date) - toTime(a.paint.date),
-          "paint-old": (a, b) =>
-            toTime(a.paint.date) - toTime(b.paint.date),
+          "acq-new": (a, b) => b._acqTime - a._acqTime,
+          "acq-old": (a, b) => a._acqTime - b._acqTime,
+          "paint-new": (a, b) => b._paintTime - a._paintTime,
+          "paint-old": (a, b) => a._paintTime - b._paintTime,
         }[by];
         return [...minis].sort(get || get["name-asc"]);
       }
@@ -1773,7 +1773,14 @@
           const card = document.createElement("article");
           card.className = "card";
           card.tabIndex = 0;
+          card.setAttribute("role", "button");
           card.addEventListener("click", () => openDetail(m));
+          card.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              openDetail(m);
+            }
+          });
 
           const firstImage =
             m.images.main[0] ||
@@ -1888,6 +1895,7 @@
             "active",
             state.quickFilter === chip.dataset.key
           );
+          chip.setAttribute("aria-pressed", state.quickFilter === chip.dataset.key ? "true" : "false");
         });
       }
 

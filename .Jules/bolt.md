@@ -10,3 +10,6 @@
 ## 2024-05-20 - [Optimize Filtering and DOM Rendering]
 **Learning:** Found significant performance bottlenecks in the hot path of the Vanilla JS filtering and rendering logic. The filter function was executing expensive set lookups even when a text search had already failed for an item. The rendering logic was also appending nodes to the DOM one by one, causing layout thrashing.
 **Action:** Always short-circuit expensive logic (like Set lookups) using early returns. For DOM manipulation, batch insertions using `DocumentFragment` to prevent unnecessary layout recalcs, and hoist loop invariants outside of `.filter()` maps to avoid redundant operations.
+## 2024-05-20 - [Cache Parsed Dates for Sorting]
+**Learning:** Found a performance bottleneck in `sortMinis` where `Date.parse()` was called repeatedly inside the sort comparator. Sorting inherently involves $O(n \log n)$ comparisons, meaning `Date.parse()` was being invoked many times for the exact same strings, causing measurable lag (e.g. ~74ms vs ~3ms for 10k elements).
+**Action:** Always pre-parse dates into cached numeric timestamp properties (like `_acqTime` and `_paintTime`) during the initial data normalization phase, so the sort comparator can just do simple numeric subtraction.
