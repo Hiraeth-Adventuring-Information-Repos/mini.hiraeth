@@ -1481,7 +1481,9 @@
           { label: "Needs Repair", key: "repair" },
         ];
         for (const f of filters) {
-          const chip = document.createElement("div");
+          const chip = document.createElement("button");
+          chip.type = "button";
+          chip.setAttribute("aria-pressed", "false");
           chip.className = "chip";
           chip.textContent = f.label;
           chip.dataset.key = f.key;
@@ -1767,7 +1769,14 @@
           const card = document.createElement("article");
           card.className = "card";
           card.tabIndex = 0;
+          card.setAttribute("role", "button");
           card.addEventListener("click", () => openDetail(m));
+          card.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              openDetail(m);
+            }
+          });
 
           const firstImage =
             m.images.main[0] ||
@@ -1879,6 +1888,7 @@
             "active",
             state.quickFilter === chip.dataset.key
           );
+          chip.setAttribute("aria-pressed", state.quickFilter === chip.dataset.key ? "true" : "false");
         });
       }
 
