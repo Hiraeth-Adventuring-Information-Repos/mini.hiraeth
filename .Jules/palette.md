@@ -9,3 +9,6 @@
 ## 2026-01-22 - Adding ARIA labels to Icon-Only Buttons
 **Learning:** Icon-only buttons using text symbols like '‹', '›', and '✕' are completely opaque to screen readers.
 **Action:** Always add descriptive `aria-label` attributes to any button that does not contain meaningful, readable text.
+## 2024-05-17 - Keyboard Accessibility for Custom Interactive Elements
+**Learning:** Using `tabindex="0"` on non-interactive elements like `div` or `article` is not sufficient for keyboard accessibility. While it makes them focusable, they will not trigger click events when pressing Enter or Space, unlike native `<button>` or `<a>` elements.
+**Action:** When making custom elements interactive via `tabindex="0"`, always add `role="button"` to inform screen readers of their interactive nature, and attach `keydown` event listeners to handle "Enter" and "Space" key presses to trigger the same action as a mouse click. Also consider using semantic interactive elements like `<button>` directly where possible (e.g., for chips/tags).
