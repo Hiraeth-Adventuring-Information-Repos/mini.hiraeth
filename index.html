@@ -1709,7 +1709,8 @@
         const has = (set, v) => (set.size === 0 ? true : set.has(v));
 
         return minis.filter((m) => {
-          const matchesQuery = q ? (m._searchText || "").includes(q) : true;
+          // ⚡ Bolt: Early return to skip expensive set lookups if text search fails
+          if (q && !(m._searchText || "").includes(q)) return false;
 
           const matchesFilters =
             has(f.type, m.type) &&
@@ -1720,6 +1721,8 @@
             has(f.room, m.location.room) &&
             has(f.storage, m.location.storage) &&
             has(f.role, m.usage.role);
+
+          if (!matchesFilters) return false;
 
           let matchesQuickFilter = true;
           if (qf) {
@@ -1735,7 +1738,7 @@
                 (m.condition || "").toLowerCase() === "needs repair";
           }
 
-          return matchesQuery && matchesFilters && matchesQuickFilter;
+          return matchesQuickFilter;
         });
       }
 
@@ -1762,6 +1765,9 @@
         g.className = `grid ${
           state.viewMode === "list" ? "list-view" : ""
         }`;
+
+        // ⚡ Bolt: Use DocumentFragment to batch DOM insertions and prevent layout thrashing
+        const fragment = document.createDocumentFragment();
 
         for (const m of minis) {
           const card = document.createElement("article");
@@ -1833,8 +1839,10 @@
       `;
           }
 
-          g.appendChild(card);
+          fragment.appendChild(card);
         }
+
+        g.appendChild(fragment);
       }
 
       function renderEmptyState(show) {
@@ -1843,8 +1851,9 @@
       }
 
       function renderOptionCounts() {
+        // ⚡ Bolt: Hoist loop invariant to avoid redundant string allocations
+        const q = state.query.toLowerCase();
         const baseSet = allMinis.filter((m) => {
-          const q = state.query.toLowerCase();
           if (!q) return true;
           return (m._searchText || "").includes(q);
         });
