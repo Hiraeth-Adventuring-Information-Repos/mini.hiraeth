@@ -1427,6 +1427,10 @@
           notes: safe(m?.notes),
         };
 
+        // ⚡ Bolt: Cache parsed dates to avoid expensive string parsing inside sort comparator (O(n log n) operations per sort)
+        normalized._acqTime = normalized.source.acquisition_date ? Date.parse(normalized.source.acquisition_date) || 0 : 0;
+        normalized._paintTime = normalized.paint.date ? Date.parse(normalized.paint.date) || 0 : 0;
+
         // Cache searchable text to avoid O(n) array operations on every keystroke
         normalized._searchText = [
           normalized.name,
@@ -1733,20 +1737,13 @@
       }
 
       function sortMinis(minis, by) {
-        const toTime = (s) => (s ? Date.parse(s) || 0 : 0);
         const get = {
           "name-asc": (a, b) => collator.compare(a.name, b.name),
           "name-desc": (a, b) => collator.compare(b.name, a.name),
-          "acq-new": (a, b) =>
-            toTime(b.source.acquisition_date) -
-            toTime(a.source.acquisition_date),
-          "acq-old": (a, b) =>
-            toTime(a.source.acquisition_date) -
-            toTime(b.source.acquisition_date),
-          "paint-new": (a, b) =>
-            toTime(b.paint.date) - toTime(a.paint.date),
-          "paint-old": (a, b) =>
-            toTime(a.paint.date) - toTime(b.paint.date),
+          "acq-new": (a, b) => b._acqTime - a._acqTime,
+          "acq-old": (a, b) => a._acqTime - b._acqTime,
+          "paint-new": (a, b) => b._paintTime - a._paintTime,
+          "paint-old": (a, b) => a._paintTime - b._paintTime,
         }[by];
         return [...minis].sort(get || get["name-asc"]);
       }
