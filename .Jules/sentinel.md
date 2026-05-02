@@ -5,3 +5,7 @@
 **Vulnerability:** The `escapeHtml()` function in `editor.html` was missing escaping logic for single (`'`) and double (`"`) quotes. This left the application vulnerable to HTML attribute injection if user-supplied input was placed inside an HTML attribute block, as attackers could break out using quotes.
 **Learning:** Proper escaping to prevent XSS must account for all five critical characters: `<`, `>`, `&`, `"`, and `'`. Missing any of these leaves specific injection vectors open, particularly when building raw HTML strings manually.
 **Prevention:** Ensure any custom `escapeHtml` implementation replaces all 5 characters (`&`, `<`, `>`, `"`, `'`) with their respective HTML entities to prevent breakout in both element bodies and HTML attributes.
+## 2024-05-24 - [Add Content Security Policy headers]
+**Vulnerability:** Missing Content Security Policy (CSP) headers, allowing unrestricted execution of inline scripts, styles, and loading of external resources.
+**Learning:** Even static HTML sites benefit from a strict CSP. Because this repository doesn't have a backend to serve HTTP headers, `<meta http-equiv="Content-Security-Policy">` tags are an effective alternative.
+**Prevention:** Always define a Content Security Policy specifying allowed sources for scripts, images, and styles (e.g., `default-src 'self'`).
