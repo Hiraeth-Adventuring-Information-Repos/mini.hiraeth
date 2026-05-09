@@ -1202,7 +1202,7 @@
           "<text x='50%' y='50%' dominant-baseline='middle' " +
           `text-anchor='middle' fill='${text}' font-family='system-ui' ` +
           "font-size='20'>No image</text></svg>";
-        return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
+        return "data:image/svg+xml;utf8," + encodeURIComponent(svg).replace(/'/g, "%27");
       }
 
       function refreshPlaceholderSvg() {
