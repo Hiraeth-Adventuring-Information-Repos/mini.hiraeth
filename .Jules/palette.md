@@ -12,3 +12,6 @@
 ## 2024-05-17 - Keyboard Accessibility for Custom Interactive Elements
 **Learning:** Using `tabindex="0"` on non-interactive elements like `div` or `article` is not sufficient for keyboard accessibility. While it makes them focusable, they will not trigger click events when pressing Enter or Space, unlike native `<button>` or `<a>` elements.
 **Action:** When making custom elements interactive via `tabindex="0"`, always add `role="button"` to inform screen readers of their interactive nature, and attach `keydown` event listeners to handle "Enter" and "Space" key presses to trigger the same action as a mouse click. Also consider using semantic interactive elements like `<button>` directly where possible (e.g., for chips/tags).
+## 2026-05-09 - Providing Fallback for outline: none
+**Learning:** Removing default focus outlines with `outline: none;` without providing an alternative completely breaks keyboard navigation visibility.
+**Action:** Always provide a global `*:focus-visible` fallback rule (e.g., using `--accent` color and `outline-offset`) to ensure custom interactive elements and inputs remain accessible to keyboard users.
