@@ -1174,6 +1174,22 @@
         role: [],
       };
 
+      // ⚡ Bolt: Cache DOM elements to avoid repetitive querySelectorAll calls during frequent renders
+      const optionCountElements = {};
+      const optionCountCache = {}; // Cache the current text content to avoid redundant DOM updates
+
+      // ⚡ Bolt: Lookup map to avoid evaluating nested ternary expressions inside hot loops
+      const filterValueGetters = {
+        type: (m) => m.type,
+        size: (m) => m.size,
+        paint: (m) => m.paint.status,
+        manufacturer: (m) => m.source.manufacturer,
+        painter: (m) => m.paint.painter,
+        room: (m) => m.location.room,
+        storage: (m) => m.location.storage,
+        role: (m) => m.usage.role,
+      };
+
       const el = (sel) => document.querySelector(sel);
       const els = (sel) => [...document.querySelectorAll(sel)];
 
@@ -1548,6 +1564,11 @@
           const countSpan = document.createElement("span");
           countSpan.className = "count";
           countSpan.textContent = "0";
+
+          // ⚡ Bolt: Cache the count span element directly during creation
+          optionCountElements[`${key}_${v}`] = countSpan;
+          optionCountCache[`${key}_${v}`] = "0";
+
           lab.appendChild(cb);
           lab.appendChild(span);
           lab.appendChild(countSpan);
@@ -1858,34 +1879,34 @@
           return (m._searchText || "").includes(q);
         });
 
-        for (const key of Object.keys(uniqueOptions)) {
-          const counts = {};
-          for (const mini of baseSet) {
-            const value =
-              key === "paint"
-                ? mini.paint.status
-                : key === "manufacturer"
-                ? mini.source.manufacturer
-                : key === "painter"
-                ? mini.paint.painter
-                : key === "room"
-                ? mini.location.room
-                : key === "storage"
-                ? mini.location.storage
-                : key === "role"
-                ? mini.usage.role
-                : mini[key];
+        // ⚡ Bolt: Initialize counts for all keys in one go
+        const globalCounts = {};
+        const keys = Object.keys(uniqueOptions);
+
+        // ⚡ Bolt: Single pass over the filtered items, O(N) instead of O(K*N)
+        for (const mini of baseSet) {
+          for (const key of keys) {
+            const value = filterValueGetters[key](mini);
             if (value) {
-              counts[value] = (counts[value] || 0) + 1;
+              const cacheKey = `${key}_${value}`;
+              globalCounts[cacheKey] = (globalCounts[cacheKey] || 0) + 1;
             }
           }
-          els(`.opts [id^="f_${key}_"]`).forEach((checkbox) => {
-            const countEl =
-              checkbox.nextElementSibling.nextElementSibling;
-            if (countEl && countEl.classList.contains("count")) {
-              countEl.textContent = counts[checkbox.value] || 0;
+        }
+
+        // ⚡ Bolt: Use cached DOM elements and avoid redundant layout thrashing by checking current value
+        for (const key of keys) {
+          for (const v of uniqueOptions[key]) {
+            const cacheKey = `${key}_${v}`;
+            const countStr = String(globalCounts[cacheKey] || 0);
+            if (optionCountCache[cacheKey] !== countStr) {
+               optionCountCache[cacheKey] = countStr;
+               const countEl = optionCountElements[cacheKey];
+               if (countEl) {
+                 countEl.textContent = countStr;
+               }
             }
-          });
+          }
         }
       }
 
