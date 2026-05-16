@@ -16,3 +16,6 @@
 ## 2024-05-20 - [Optimize Option Count Rendering]
 **Learning:** In a vanilla JS application, executing `document.querySelectorAll` inside a loop that runs on every keystroke or filter change is a significant performance bottleneck. Additionally, computing dataset aggregations (like group counts) separately for each property results in O(K*N) complexity (K=properties, N=items), and unconditionally updating `.textContent` causes layout thrashing.
 **Action:** Always pre-cache DOM elements that need frequent updating during initial rendering. Compute dataset aggregations in a single pass (O(N)), and use a fast lookup map instead of complex ternary statements. Finally, maintain a JS cache of the current DOM text and conditionally update the DOM only when the value has changed to prevent forced reflows.
+## 2024-05-16 - Array Filtering Hot Path
+**Learning:** Checking `set.size === 0` inside an array `.filter()` callback for a large dataset causes a surprisingly large amount of overhead due to redundant property access.
+**Action:** Hoist invariant checks like `set.size === 0` into local variables *before* the loop to reduce O(N) redundant property access.
