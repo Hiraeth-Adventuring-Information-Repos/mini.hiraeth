@@ -1135,13 +1135,10 @@
       const STORAGE_KEY = "miniGalleryStateV2";
       const THEME_STORAGE_KEY = "hiraeth-theme";
 
+      // ⚡ Bolt: Single regex pass with map lookup instead of 5 chained replace() calls
+      const htmlEntityMap = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
       function escapeHtml(s) {
-        return String(s || "")
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;")
-          .replace(/'/g, "&#39;");
+        return String(s || "").replace(/[&<>"']/g, m => htmlEntityMap[m]);
       }
 
       const collator = new Intl.Collator(undefined, {
@@ -1732,21 +1729,29 @@
         const f = state.filters;
         const qf = state.quickFilter;
 
-        const has = (set, v) => (set.size === 0 ? true : set.has(v));
+        // ⚡ Bolt: Hoist set.size checks outside the loop to avoid redundant evaluations
+        const emptyType = f.type.size === 0;
+        const emptySize = f.size.size === 0;
+        const emptyPaint = f.paint.size === 0;
+        const emptyManufacturer = f.manufacturer.size === 0;
+        const emptyPainter = f.painter.size === 0;
+        const emptyRoom = f.room.size === 0;
+        const emptyStorage = f.storage.size === 0;
+        const emptyRole = f.role.size === 0;
 
         return minis.filter((m) => {
           // ⚡ Bolt: Early return to skip expensive set lookups if text search fails
           if (q && !(m._searchText || "").includes(q)) return false;
 
           const matchesFilters =
-            has(f.type, m.type) &&
-            has(f.size, m.size) &&
-            has(f.paint, m.paint.status) &&
-            has(f.manufacturer, m.source.manufacturer) &&
-            has(f.painter, m.paint.painter) &&
-            has(f.room, m.location.room) &&
-            has(f.storage, m.location.storage) &&
-            has(f.role, m.usage.role);
+            (emptyType || f.type.has(m.type)) &&
+            (emptySize || f.size.has(m.size)) &&
+            (emptyPaint || f.paint.has(m.paint.status)) &&
+            (emptyManufacturer || f.manufacturer.has(m.source.manufacturer)) &&
+            (emptyPainter || f.painter.has(m.paint.painter)) &&
+            (emptyRoom || f.room.has(m.location.room)) &&
+            (emptyStorage || f.storage.has(m.location.storage)) &&
+            (emptyRole || f.role.has(m.usage.role));
 
           if (!matchesFilters) return false;
 

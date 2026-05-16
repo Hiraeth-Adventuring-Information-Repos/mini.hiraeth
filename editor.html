@@ -1238,13 +1238,10 @@
         setTimeout(() => URL.revokeObjectURL(url), 500);
       }
 
+      // ⚡ Bolt: Single regex pass with map lookup instead of 5 chained replace() calls
+      const htmlEntityMap = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
       function escapeHtml(s) {
-        return String(s || "")
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;")
-          .replace(/'/g, "&#39;");
+        return String(s || "").replace(/[&<>"']/g, m => htmlEntityMap[m]);
       }
 
       // Wire up UI
