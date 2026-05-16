@@ -1783,6 +1783,51 @@
       function renderActiveChips() {
         const wrap = el("#activeFilters");
         wrap.innerHTML = "";
+
+        const createChip = (label, onRemove, ariaLabel) => {
+          const chip = document.createElement("span");
+          chip.className = "chip";
+          chip.textContent = label;
+
+          const btn = document.createElement("button");
+          btn.setAttribute("aria-label", ariaLabel || `Remove filter ${label}`);
+          btn.innerHTML = "✕";
+          btn.addEventListener("click", onRemove);
+
+          chip.appendChild(btn);
+          return chip;
+        };
+
+        if (state.quickFilter) {
+          const qfLabel =
+            state.quickFilter.charAt(0).toUpperCase() +
+            state.quickFilter.slice(1);
+          wrap.appendChild(
+            createChip(
+              qfLabel,
+              () => {
+                state.quickFilter = null;
+                applyAndRender();
+              },
+              `Remove quick filter ${qfLabel}`
+            )
+          );
+        }
+
+        for (const [key, set] of Object.entries(state.filters)) {
+          for (const val of set) {
+            wrap.appendChild(
+              createChip(
+                val,
+                () => {
+                  state.filters[key].delete(val);
+                  applyAndRender();
+                },
+                `Remove filter ${val}`
+              )
+            );
+          }
+        }
       }
 
       function renderGrid(minis) {
