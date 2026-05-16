@@ -15,3 +15,7 @@
 ## 2026-05-09 - Providing Fallback for outline: none
 **Learning:** Removing default focus outlines with `outline: none;` without providing an alternative completely breaks keyboard navigation visibility.
 **Action:** Always provide a global `*:focus-visible` fallback rule (e.g., using `--accent` color and `outline-offset`) to ensure custom interactive elements and inputs remain accessible to keyboard users.
+
+## 2026-05-24 - Active Filter Chips
+**Learning:** Complex filters hidden inside a dropdown must have persistent, at-a-glance active state representations (like chips) visible outside the panel so users maintain context.
+**Action:** Always provide a visual summary of active filters with an easy way to clear them outside of the dropdown.
