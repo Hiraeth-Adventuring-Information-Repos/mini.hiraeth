@@ -1077,7 +1077,7 @@
 
       function validateMini(m, opts = {}) {
         const out = [];
-        const idOk = /^[a-z0-9]+[a-z0-9-_]*$/.test(m.id || "");
+        const idOk = /^[a-z0-9][a-z0-9-_]*$/.test(m.id || "");
         if (!m.id) out.push("missing id");
         if (!idOk) out.push("id should be lowercase and use - or _ only");
         if (opts.checkIdUnique) {
