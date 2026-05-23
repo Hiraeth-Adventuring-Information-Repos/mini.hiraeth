@@ -19,3 +19,6 @@
 ## 2024-05-16 - Array Filtering Hot Path
 **Learning:** Checking `set.size === 0` inside an array `.filter()` callback for a large dataset causes a surprisingly large amount of overhead due to redundant property access.
 **Action:** Hoist invariant checks like `set.size === 0` into local variables *before* the loop to reduce O(N) redundant property access.
+## 2024-05-23 - [Single-Pass Data Aggregation]
+**Learning:** The `buildUniqueOptions` function iterated through the entire miniature collection 8 separate times (once for each category) to gather unique property values, causing redundant iterations resulting in O(K*N) complexity. With large datasets, parsing an array multiple times can severely degrade initialization performance.
+**Action:** Always prefer a single-pass O(N) traversal when extracting multiple aggregations from an array. Collect the relevant values into separate sets simultaneously during a single iteration, rather than using multiple array passes.
