@@ -6,7 +6,10 @@
       name="viewport"
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; connect-src 'self' https:;" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; connect-src 'self' https:;"
+    />
     <title>D&D Miniature Collection</title>
     <meta
       name="description"
@@ -29,13 +32,14 @@
           saved = localStorage.getItem(key);
         } catch {}
         const systemDark = window.matchMedia(
-          "(prefers-color-scheme: dark)"
+          "(prefers-color-scheme: dark)",
         ).matches;
-        const theme = saved === "light" || saved === "dark"
-          ? saved
-          : systemDark
-          ? "dark"
-          : "light";
+        const theme =
+          saved === "light" || saved === "dark"
+            ? saved
+            : systemDark
+              ? "dark"
+              : "light";
         document.documentElement.setAttribute("data-theme", theme);
       })();
     </script>
@@ -82,10 +86,11 @@
         --radius-sm: 8px;
         --radius-lg: 16px;
         --font-header: "IM Fell English SC", serif;
-        --font-body: "Cormorant Garamond", "EB Garamond", "Libre Baskerville",
+        --font-body:
+          "Cormorant Garamond", "EB Garamond", "Libre Baskerville",
           "Quattrocento", "Source Sans 3", serif;
-        --font-ui: "Source Sans 3", system-ui, -apple-system, "Segoe UI",
-          sans-serif;
+        --font-ui:
+          "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
       }
 
       html[data-theme="dark"] {
@@ -1109,8 +1114,20 @@
         <div class="carousel-container">
           <div class="carousel">
             <div class="carousel-track" id="carouselTrack"></div>
-            <button class="carousel-nav prev" id="carouselPrev" aria-label="Previous image">‹</button>
-            <button class="carousel-nav next" id="carouselNext" aria-label="Next image">›</button>
+            <button
+              class="carousel-nav prev"
+              id="carouselPrev"
+              aria-label="Previous image"
+            >
+              ‹
+            </button>
+            <button
+              class="carousel-nav next"
+              id="carouselNext"
+              aria-label="Next image"
+            >
+              ›
+            </button>
           </div>
           <div class="carousel-filmstrip" id="carouselFilmstrip"></div>
         </div>
@@ -1122,10 +1139,19 @@
 
     <!-- FIXED: Lightbox is outside the dialog to be truly full-screen -->
     <div id="lightbox" class="lightbox">
-      <button class="lightbox-btn lightbox-close" aria-label="Close full-screen">✕</button>
-      <button class="lightbox-btn lightbox-prev" aria-label="Previous image">‹</button>
+      <button
+        class="lightbox-btn lightbox-close"
+        aria-label="Close full-screen"
+      >
+        ✕
+      </button>
+      <button class="lightbox-btn lightbox-prev" aria-label="Previous image">
+        ‹
+      </button>
       <img id="lightboxImg" class="lightbox-img" src="" alt="Zoomed mini" />
-      <button class="lightbox-btn lightbox-next" aria-label="Next image">›</button>
+      <button class="lightbox-btn lightbox-next" aria-label="Next image">
+        ›
+      </button>
     </div>
 
     <footer>This site is part of the H.A.G.</footer>
@@ -1136,9 +1162,15 @@
       const THEME_STORAGE_KEY = "hiraeth-theme";
 
       // ⚡ Bolt: Single regex pass with map lookup instead of 5 chained replace() calls
-      const htmlEntityMap = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+      const htmlEntityMap = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      };
       function escapeHtml(s) {
-        return String(s || "").replace(/[&<>"']/g, m => htmlEntityMap[m]);
+        return String(s || "").replace(/[&<>"']/g, (m) => htmlEntityMap[m]);
       }
 
       const collator = new Intl.Collator(undefined, {
@@ -1196,7 +1228,9 @@
       const els = (sel) => [...document.querySelectorAll(sel)];
 
       const cssVar = (name) =>
-        getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+        getComputedStyle(document.documentElement)
+          .getPropertyValue(name)
+          .trim();
 
       let PLACEHOLDER_SVG = "";
 
@@ -1220,7 +1254,10 @@
           "<text x='50%' y='50%' dominant-baseline='middle' " +
           `text-anchor='middle' fill='${text}' font-family='system-ui' ` +
           "font-size='20'>No image</text></svg>";
-        return "data:image/svg+xml;utf8," + encodeURIComponent(svg).replace(/'/g, "%27");
+        return (
+          "data:image/svg+xml;utf8," +
+          encodeURIComponent(svg).replace(/'/g, "%27")
+        );
       }
 
       function refreshPlaceholderSvg() {
@@ -1354,7 +1391,7 @@
 
         // ✅ Auto-switch to list view on mobile if no saved preference
         if (!localStorage.getItem(STORAGE_KEY) && window.innerWidth < 768) {
-            state.viewMode = "list";
+          state.viewMode = "list";
         }
 
         buildFilterGroups();
@@ -1365,26 +1402,26 @@
 
         // ✅ Live resize detection
         window.addEventListener("resize", () => {
-            if (window.innerWidth < 768 && state.viewMode !== "list") {
-                state.viewMode = "list";
-                updateViewModeUI();
-                applyAndRender();
-            }
+          if (window.innerWidth < 768 && state.viewMode !== "list") {
+            state.viewMode = "list";
+            updateViewModeUI();
+            applyAndRender();
+          }
         });
 
         requestAnimationFrame(() => {
-            const params = new URLSearchParams(window.location.search);
-            const miniId = params.get("id");
-            if (miniId) {
-                const targetMini = allMinis.find(
-                    (m) => m.id.toLowerCase() === miniId.toLowerCase()
-                );
-                if (targetMini) {
-                    setTimeout(() => openDetail(targetMini), 50);
-                }
+          const params = new URLSearchParams(window.location.search);
+          const miniId = params.get("id");
+          if (miniId) {
+            const targetMini = allMinis.find(
+              (m) => m.id.toLowerCase() === miniId.toLowerCase(),
+            );
+            if (targetMini) {
+              setTimeout(() => openDetail(targetMini), 50);
             }
+          }
         });
-    }
+      }
 
       async function loadData() {
         try {
@@ -1447,8 +1484,12 @@
         };
 
         // ⚡ Bolt: Cache parsed dates to avoid expensive string parsing inside sort comparator (O(n log n) operations per sort)
-        normalized._acqTime = normalized.source.acquisition_date ? Date.parse(normalized.source.acquisition_date) || 0 : 0;
-        normalized._paintTime = normalized.paint.date ? Date.parse(normalized.paint.date) || 0 : 0;
+        normalized._acqTime = normalized.source.acquisition_date
+          ? Date.parse(normalized.source.acquisition_date) || 0
+          : 0;
+        normalized._paintTime = normalized.paint.date
+          ? Date.parse(normalized.paint.date) || 0
+          : 0;
 
         // Cache searchable text to avoid O(n) array operations on every keystroke
         normalized._searchText = [
@@ -1473,25 +1514,40 @@
       }
 
       function buildUniqueOptions() {
-        const getUniques = (fn) => {
-          const s = new Set();
-          for (const m of allMinis) {
-            const v = fn(m);
-            if (!v) continue;
-            s.add(v);
-          }
-          return [...s].sort(collator.compare);
+        // ⚡ Bolt: Single pass over the dataset instead of 8 separate passes to build unique options
+        const sets = {
+          type: new Set(),
+          size: new Set(),
+          paint: new Set(),
+          manufacturer: new Set(),
+          painter: new Set(),
+          room: new Set(),
+          storage: new Set(),
+          role: new Set(),
         };
-        uniqueOptions.type = getUniques((m) => m.type);
-        uniqueOptions.size = getUniques((m) => m.size);
-        uniqueOptions.paint = getUniques((m) => m.paint.status);
-        uniqueOptions.manufacturer = getUniques(
-          (m) => m.source.manufacturer
+
+        for (const m of allMinis) {
+          if (m.type) sets.type.add(m.type);
+          if (m.size) sets.size.add(m.size);
+          if (m.paint.status) sets.paint.add(m.paint.status);
+          if (m.source.manufacturer)
+            sets.manufacturer.add(m.source.manufacturer);
+          if (m.paint.painter) sets.painter.add(m.paint.painter);
+          if (m.location.room) sets.room.add(m.location.room);
+          if (m.location.storage) sets.storage.add(m.location.storage);
+          if (m.usage.role) sets.role.add(m.usage.role);
+        }
+
+        uniqueOptions.type = [...sets.type].sort(collator.compare);
+        uniqueOptions.size = [...sets.size].sort(collator.compare);
+        uniqueOptions.paint = [...sets.paint].sort(collator.compare);
+        uniqueOptions.manufacturer = [...sets.manufacturer].sort(
+          collator.compare,
         );
-        uniqueOptions.painter = getUniques((m) => m.paint.painter);
-        uniqueOptions.room = getUniques((m) => m.location.room);
-        uniqueOptions.storage = getUniques((m) => m.location.storage);
-        uniqueOptions.role = getUniques((m) => m.usage.role);
+        uniqueOptions.painter = [...sets.painter].sort(collator.compare);
+        uniqueOptions.room = [...sets.room].sort(collator.compare);
+        uniqueOptions.storage = [...sets.storage].sort(collator.compare);
+        uniqueOptions.role = [...sets.role].sort(collator.compare);
       }
 
       function buildQuickFilters() {
@@ -1511,8 +1567,7 @@
           chip.textContent = f.label;
           chip.dataset.key = f.key;
           chip.addEventListener("click", () => {
-            state.quickFilter =
-              state.quickFilter === f.key ? null : f.key;
+            state.quickFilter = state.quickFilter === f.key ? null : f.key;
             applyAndRender();
           });
           cont.appendChild(chip);
@@ -1609,7 +1664,7 @@
           applyAndRender();
         });
         el("#emptyResetBtn").addEventListener("click", () =>
-          el("#resetBtn").click()
+          el("#resetBtn").click(),
         );
         el("#randomBtn").addEventListener("click", () => randomSelect());
         el("#viewModeBtn").addEventListener("click", () => toggleViewMode());
@@ -1618,13 +1673,13 @@
           setFiltersDropdownOpen(!state.filtersOpen);
         });
         el("#headerThemeToggleBtn").addEventListener("click", () =>
-          toggleTheme()
+          toggleTheme(),
         );
         el("#closeDialogBtn").addEventListener("click", () =>
-          el("#detailDialog").close()
+          el("#detailDialog").close(),
         );
         el("#filtersDropdown").addEventListener("click", (e) =>
-          e.stopPropagation()
+          e.stopPropagation(),
         );
         document.addEventListener("click", (e) => {
           const btn = el("#filtersToggleBtn");
@@ -1694,7 +1749,7 @@
           sortBy: state.sortBy,
           viewMode: state.viewMode,
           filters: Object.fromEntries(
-            Object.entries(state.filters).map(([k, s]) => [k, [...s]])
+            Object.entries(state.filters).map(([k, s]) => [k, [...s]]),
           ),
         };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
@@ -1814,8 +1869,8 @@
                 state.quickFilter = null;
                 applyAndRender();
               },
-              `Remove quick filter ${qfLabel}`
-            )
+              `Remove quick filter ${qfLabel}`,
+            ),
           );
         }
 
@@ -1828,8 +1883,8 @@
                   state.filters[key].delete(val);
                   applyAndRender();
                 },
-                `Remove filter ${val}`
-              )
+                `Remove filter ${val}`,
+              ),
             );
           }
         }
@@ -1838,9 +1893,7 @@
       function renderGrid(minis) {
         const g = el("#grid");
         g.innerHTML = "";
-        g.className = `grid ${
-          state.viewMode === "list" ? "list-view" : ""
-        }`;
+        g.className = `grid ${state.viewMode === "list" ? "list-view" : ""}`;
 
         // ⚡ Bolt: Use DocumentFragment to batch DOM insertions and prevent layout thrashing
         const fragment = document.createDocumentFragment();
@@ -1875,9 +1928,9 @@
         </div>
         <div class="meta">
           <h3>${escapeHtml(m.name)}</h3>
-          <div class="line">${escapeHtml([m.type, m.size, m.usage.role]
-            .filter(Boolean)
-            .join(" • "))}</div>
+          <div class="line">${escapeHtml(
+            [m.type, m.size, m.usage.role].filter(Boolean).join(" • "),
+          )}</div>
           <div class="extra">
             ${m.paint.status ? `Paint: ${escapeHtml(m.paint.status)}` : ""}
             ${m.paint.date ? ` • Painted: ${escapeHtml(m.paint.date)}` : ""}
@@ -1893,24 +1946,26 @@
             // Original grid/tile view
             card.innerHTML = `
         <div class="ribbon ${paintStatusClass}"><span>${
-              escapeHtml(m.paint.status) || "Unknown"
-            }</span></div>
+          escapeHtml(m.paint.status) || "Unknown"
+        }</span></div>
         <div class="thumb">
           <img loading="lazy" src="${escapeHtml(firstImage)}" alt="${escapeHtml(m.name)}"
                onerror="this.src='${PLACEHOLDER_SVG}'">
         </div>
         <div class="meta">
           <h3>${escapeHtml(m.name)}</h3>
-          <div class="line">${escapeHtml([m.type, m.size, m.usage.role]
-            .filter(Boolean)
-            .join(" • "))}</div>
-          <div class="line">${escapeHtml([
-            m.source.manufacturer,
-            `Painter: ${m.paint.painter || "—"}`,
-            m.location.room || m.location.storage,
-          ]
-            .filter(Boolean)
-            .join(" • "))}</div>
+          <div class="line">${escapeHtml(
+            [m.type, m.size, m.usage.role].filter(Boolean).join(" • "),
+          )}</div>
+          <div class="line">${escapeHtml(
+            [
+              m.source.manufacturer,
+              `Painter: ${m.paint.painter || "—"}`,
+              m.location.room || m.location.storage,
+            ]
+              .filter(Boolean)
+              .join(" • "),
+          )}</div>
         </div>
       `;
           }
@@ -1955,11 +2010,11 @@
             const cacheKey = `${key}_${v}`;
             const countStr = String(globalCounts[cacheKey] || 0);
             if (optionCountCache[cacheKey] !== countStr) {
-               optionCountCache[cacheKey] = countStr;
-               const countEl = optionCountElements[cacheKey];
-               if (countEl) {
-                 countEl.textContent = countStr;
-               }
+              optionCountCache[cacheKey] = countStr;
+              const countEl = optionCountElements[cacheKey];
+              if (countEl) {
+                countEl.textContent = countStr;
+              }
             }
           }
         }
@@ -1969,9 +2024,12 @@
         els("#quickFilters .chip").forEach((chip) => {
           chip.classList.toggle(
             "active",
-            state.quickFilter === chip.dataset.key
+            state.quickFilter === chip.dataset.key,
           );
-          chip.setAttribute("aria-pressed", state.quickFilter === chip.dataset.key ? "true" : "false");
+          chip.setAttribute(
+            "aria-pressed",
+            state.quickFilter === chip.dataset.key ? "true" : "false",
+          );
         });
       }
 
@@ -2150,15 +2208,14 @@
         els(".filmstrip-thumb").forEach((thumb) => {
           thumb.classList.toggle(
             "active",
-            parseInt(thumb.dataset.index) === carouselIndex
+            parseInt(thumb.dataset.index) === carouselIndex,
           );
         });
       }
 
       el("#carouselPrev").addEventListener("click", () => {
         carouselIndex =
-          (carouselIndex - 1 + carouselImages.length) %
-          carouselImages.length;
+          (carouselIndex - 1 + carouselImages.length) % carouselImages.length;
         updateCarousel();
       });
 
@@ -2216,8 +2273,7 @@
       el(".lightbox-close").addEventListener("click", closeLightbox);
       el(".lightbox-prev").addEventListener("click", () => {
         lightboxIndex =
-          (lightboxIndex - 1 + lightboxImages.length) %
-          lightboxImages.length;
+          (lightboxIndex - 1 + lightboxImages.length) % lightboxImages.length;
         updateLightboxImage();
       });
       el(".lightbox-next").addEventListener("click", () => {
@@ -2245,7 +2301,7 @@
         isDragging = true;
         lightboxImg.classList.add("grabbing");
         const transform = new DOMMatrix(
-          getComputedStyle(lightboxImg).transform
+          getComputedStyle(lightboxImg).transform,
         );
         startX = e.clientX - transform.e;
         startY = e.clientY - transform.f;
