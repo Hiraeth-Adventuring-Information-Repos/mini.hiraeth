@@ -1711,6 +1711,7 @@
           renderActiveChips();
           renderOptionCounts();
           updateQuickFilterUI();
+          syncCheckboxes();
 
           if (sorted.length === 0) {
             renderEmptyState(true);
@@ -1973,6 +1974,17 @@
           );
           chip.setAttribute("aria-pressed", state.quickFilter === chip.dataset.key ? "true" : "false");
         });
+      }
+
+      function syncCheckboxes() {
+        for (const [key, set] of Object.entries(state.filters)) {
+          for (const v of uniqueOptions[key]) {
+            const cb = document.getElementById(`f_${key}_${slug(v)}`);
+            if (cb) {
+              cb.checked = set.has(v);
+            }
+          }
+        }
       }
 
       function toggleViewMode() {
