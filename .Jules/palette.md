@@ -23,3 +23,7 @@
 ## 2026-05-25 - Synchronizing Custom Filter UI and Native Checkboxes
 **Learning:** When programmatically updating filter states via custom UI elements (like removing an active filter chip), the underlying native UI controls (e.g., checkboxes in a dropdown menu) may become out of sync if not explicitly updated.
 **Action:** Always ensure that when custom filter tags or chips are removed, the corresponding native controls (`input[type="checkbox"]`) are explicitly unchecked to prevent confusing state mismatches for users.
+
+## 2024-05-19 - [Keyboard Accessibility for Custom Interactive Elements]
+**Learning:** When custom non-semantic HTML elements (like `div` or `img` tags) are used as interactive components mimicking button behavior (e.g., in an image carousel or lightbox), simply adding an `onclick` handler is insufficient for accessibility. Keyboard users cannot interact with these elements without explicit structural attributes and keyboard event handling.
+**Action:** Always add `role="button"` and `tabindex="0"` to make the custom element focusable and recognizable as a button by screen readers. Furthermore, a `keydown` event listener for the 'Enter' and 'Space' keys MUST be attached to replicate the `click` behavior for keyboard navigation. Include an appropriate `aria-label` when the visual content (like an image) does not inherently convey its interactive purpose.

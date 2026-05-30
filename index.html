@@ -2186,23 +2186,38 @@
           const slide = document.createElement("div");
           slide.className = "carousel-slide";
           slide.innerHTML = `
-            <img loading="lazy" src="${escapeHtml(imgData.src)}" alt="${escapeHtml(m.name)} - ${escapeHtml(imgData.label)}" onerror="this.src='${PLACEHOLDER_SVG}'">
+            <img loading="lazy" src="${escapeHtml(imgData.src)}" alt="${escapeHtml(m.name)} - ${escapeHtml(imgData.label)}" onerror="this.src='${PLACEHOLDER_SVG}'" role="button" tabindex="0">
             <div class="carousel-label">${escapeHtml(imgData.label)}</div>
           `;
-          slide
-            .querySelector("img")
-            .addEventListener("click", () => openLightbox(index));
+          const imgEl = slide.querySelector("img");
+          imgEl.addEventListener("click", () => openLightbox(index));
+          imgEl.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              openLightbox(index);
+            }
+          });
           track.appendChild(slide);
 
           const thumb = document.createElement("div");
           thumb.className = "filmstrip-thumb";
           thumb.dataset.index = index;
+          thumb.setAttribute("role", "button");
+          thumb.setAttribute("tabindex", "0");
+          thumb.setAttribute("aria-label", `View thumbnail ${index + 1}`);
           thumb.innerHTML = `<img src="${escapeHtml(imgData.src)}" alt="Thumbnail ${
             index + 1
           }" onerror="this.src='${PLACEHOLDER_SVG}'">`;
           thumb.addEventListener("click", () => {
             carouselIndex = index;
             updateCarousel();
+          });
+          thumb.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              carouselIndex = index;
+              updateCarousel();
+            }
           });
           filmstrip.appendChild(thumb);
         });
