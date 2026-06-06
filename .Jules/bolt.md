@@ -22,3 +22,6 @@
 ## 2024-05-23 - [Single-Pass Data Aggregation]
 **Learning:** The `buildUniqueOptions` function iterated through the entire miniature collection 8 separate times (once for each category) to gather unique property values, causing redundant iterations resulting in O(K*N) complexity. With large datasets, parsing an array multiple times can severely degrade initialization performance.
 **Action:** Always prefer a single-pass O(N) traversal when extracting multiple aggregations from an array. Collect the relevant values into separate sets simultaneously during a single iteration, rather than using multiple array passes.
+## 2024-06-06 - [Optimize Checkbox Synchronization]
+**Learning:** When syncing dynamic states to DOM elements in hot loops in Vanilla JS, avoid repetitive `document.getElementById` and string recalculations by caching element references in a global dictionary map during their initial creation phase.
+**Action:** Cache element references during creation instead of querying the DOM repeatedly in the render loop.
