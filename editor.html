@@ -6,7 +6,10 @@
       name="viewport"
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; connect-src 'self' https:;" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; connect-src 'self' https:;"
+    />
     <title>Minis Data Editor (Local)</title>
     <meta
       name="description"
@@ -29,13 +32,14 @@
           saved = localStorage.getItem(key);
         } catch {}
         const systemDark = window.matchMedia(
-          "(prefers-color-scheme: dark)"
+          "(prefers-color-scheme: dark)",
         ).matches;
-        const theme = saved === "light" || saved === "dark"
-          ? saved
-          : systemDark
-          ? "dark"
-          : "light";
+        const theme =
+          saved === "light" || saved === "dark"
+            ? saved
+            : systemDark
+              ? "dark"
+              : "light";
         document.documentElement.setAttribute("data-theme", theme);
       })();
     </script>
@@ -65,10 +69,11 @@
         --radius: 12px;
         --radius-sm: 8px;
         --font-header: "IM Fell English SC", serif;
-        --font-body: "Cormorant Garamond", "EB Garamond", "Libre Baskerville",
+        --font-body:
+          "Cormorant Garamond", "EB Garamond", "Libre Baskerville",
           "Quattrocento", "Source Sans 3", serif;
-        --font-ui: "Source Sans 3", system-ui, -apple-system, "Segoe UI",
-          sans-serif;
+        --font-ui:
+          "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
       }
 
       html[data-theme="dark"] {
@@ -325,15 +330,16 @@
     <header>
       <h1>Minis Data Editor (Local)</h1>
       <div class="muted">
-        Load your data/minis.json, edit, then export a new minis.json to
-        commit.
+        Load your data/minis.json, edit, then export a new minis.json to commit.
         This runs locally. It cannot push to GitHub.
       </div>
       <div class="hstack">
         <span id="summary" class="pill">0 minis</span>
         <span id="dirty" class="pill">Saved</span>
         <span id="ls" class="pill">Local backup: none</span>
-        <button id="themeToggleBtn" class="btn theme-toggle">Theme: Auto</button>
+        <button id="themeToggleBtn" class="btn theme-toggle">
+          Theme: Auto
+        </button>
       </div>
     </header>
 
@@ -394,8 +400,10 @@
             </button>
           </div>
           <div class="vstack small">
-            <span>After export, replace data/minis.json in your repo and
-              commit.</span>
+            <span
+              >After export, replace data/minis.json in your repo and
+              commit.</span
+            >
           </div>
         </div>
 
@@ -507,11 +515,7 @@
           </div>
           <div>
             <label for="storage">Storage</label>
-            <input
-              id="storage"
-              type="text"
-              placeholder="Shelf, bin, case…"
-            />
+            <input id="storage" type="text" placeholder="Shelf, bin, case…" />
           </div>
         </div>
 
@@ -564,19 +568,16 @@
           </div>
           <div>
             <label for="campaigns">Campaigns</label>
-            <input
-              id="campaigns"
-              type="text"
-              placeholder="Comma-separated"
-            />
+            <input id="campaigns" type="text" placeholder="Comma-separated" />
           </div>
         </div>
 
         <div class="section-title">Images (one path per line)</div>
         <div class="hstack" style="margin-bottom: 8px">
           <button id="imgSuggest" class="btn">Suggest Paths</button>
-          <span class="small">Suggests paths based on ID if fields are
-            empty.</span>
+          <span class="small"
+            >Suggests paths based on ID if fields are empty.</span
+          >
         </div>
         <div class="grid2">
           <div>
@@ -621,8 +622,9 @@
 
         <div class="hstack">
           <button id="applyBtn" class="btn primary">Apply Changes</button>
-          <span class="small">Changes auto-save to memory; apply to update
-            list.</span>
+          <span class="small"
+            >Changes auto-save to memory; apply to update list.</span
+          >
         </div>
 
         <div style="height: 12px"></div>
@@ -744,7 +746,7 @@
       function normalizeMini(m) {
         const safe = (v, d = "") => (v == null ? d : v);
         const images = m.images || {};
-        return {
+        const normalized = {
           id: safe(m.id),
           name: safe(m.name),
           type: safe(m.type),
@@ -783,6 +785,38 @@
           tags: toArray(m?.tags),
           notes: safe(m?.notes),
         };
+
+        // ⚡ Bolt: Cache properties as non-enumerable to prevent export overhead and JSON.stringify leaking
+        Object.defineProperties(normalized, {
+          _searchText: {
+            value: [
+              normalized.name,
+              normalized.id,
+              normalized.type,
+              normalized.size,
+              normalized.source.manufacturer,
+              normalized.paint.status,
+            ]
+              .filter(Boolean)
+              .join(" ")
+              .toLowerCase(),
+            enumerable: false,
+          },
+          _acqTime: {
+            value: normalized.source.acquisition_date
+              ? Date.parse(normalized.source.acquisition_date) || 0
+              : 0,
+            enumerable: false,
+          },
+          _paintTime: {
+            value: normalized.paint.date
+              ? Date.parse(normalized.paint.date) || 0
+              : 0,
+            enumerable: false,
+          },
+        });
+
+        return normalized;
       }
 
       function findById(id) {
@@ -795,38 +829,21 @@
 
         let items = [...minis];
 
-        items = items.filter((m) => {
-          const s =
-            [
-              m.name,
-              m.id,
-              m.type,
-              m.size,
-              m.source?.manufacturer,
-              m.paint?.status,
-            ]
-              .filter(Boolean)
-              .join(" ")
-              .toLowerCase() || "";
-          return q ? s.includes(q) : true;
-        });
+        if (q) {
+          items = items.filter((m) => (m._searchText || "").includes(q));
+        }
 
-        const toTime = (s) => (s ? Date.parse(s) || 0 : 0);
         items.sort((a, b) => {
           if (sort === "id") return collator.compare(a.id, b.id);
-          if (sort === "acq") {
-            return (
-              toTime(b.source.acquisition_date) -
-              toTime(a.source.acquisition_date)
-            );
-          }
-          if (sort === "paint") {
-            return toTime(b.paint.date) - toTime(a.paint.date);
-          }
+          if (sort === "acq") return b._acqTime - a._acqTime;
+          if (sort === "paint") return b._paintTime - a._paintTime;
           return collator.compare(a.name, b.name);
         });
 
         $list.innerHTML = "";
+        // ⚡ Bolt: Batch DOM insertions to prevent layout thrashing
+        const fragment = document.createDocumentFragment();
+
         for (const m of items) {
           const div = document.createElement("div");
           div.className = "item" + (m.id === selectedId ? " active" : "");
@@ -836,7 +853,7 @@
             `<div><strong>${escapeHtml(m.name || "(no name)")}</strong></div>` +
             `<div class="small">${escapeHtml(m.id || "")}</div>` +
             `<div class="small">${escapeHtml(
-              [m.type, m.size, m.paint.status].filter(Boolean).join(" • ")
+              [m.type, m.size, m.paint.status].filter(Boolean).join(" • "),
             )}</div>`;
           div.addEventListener("click", () => {
             selectedId = m.id;
@@ -851,8 +868,9 @@
               renderList();
             }
           });
-          $list.appendChild(div);
+          fragment.appendChild(div);
         }
+        $list.appendChild(fragment);
       }
 
       function loadToForm(m) {
@@ -973,12 +991,14 @@
       }
 
       function applyChanges() {
-        const m = getFormData();
+        let m = getFormData();
         const errors = validateMini(m, { checkIdUnique: true });
         if (errors.length) {
           alert("Please fix:\n\n" + errors.join("\n"));
           return;
         }
+        // ⚡ Bolt: Normalize newly applied data to ensure cached _searchText and _acqTime properties exist
+        m = normalizeMini(m);
         const idx = minis.findIndex((x) => x.id === selectedId);
         if (idx >= 0) {
           minis[idx] = m;
@@ -1020,8 +1040,10 @@
           i++;
           id = `${base}-${String(i).padStart(2, "0")}`;
         }
-        const copy = JSON.parse(JSON.stringify(src));
+        let copy = JSON.parse(JSON.stringify(src));
         copy.id = id;
+        // ⚡ Bolt: Normalize duplicated data to restore non-enumerable cached properties stripped by stringify
+        copy = normalizeMini(copy);
         minis.push(copy);
         selectedId = id;
         renderList();
@@ -1034,7 +1056,7 @@
         const m = findById(selectedId);
         if (!m) return;
         const ok = confirm(
-          `Delete "${m.name || m.id}"? This cannot be undone.`
+          `Delete "${m.name || m.id}"? This cannot be undone.`,
         );
         if (!ok) return;
         minis = minis.filter((x) => x.id !== m.id);
@@ -1081,9 +1103,7 @@
         if (!m.id) out.push("missing id");
         if (!idOk) out.push("id should be lowercase and use - or _ only");
         if (opts.checkIdUnique) {
-          const dup = minis.some(
-            (x) => x.id === m.id && x.id !== selectedId
-          );
+          const dup = minis.some((x) => x.id === m.id && x.id !== selectedId);
           if (dup) out.push("id must be unique");
         }
         if (!m.name) out.push("missing name");
@@ -1091,7 +1111,7 @@
         if (!m.size) out.push("missing size");
         if (!m.images.main || m.images.main.length === 0)
           out.push(
-            "images.main is empty (at least one main photo is recommended)"
+            "images.main is empty (at least one main photo is recommended)",
           );
         return out;
       }
@@ -1171,7 +1191,7 @@
           .map(
             ([k, v]) =>
               `<div class="muted">${escapeHtml(k)}</div>` +
-              `<div>${escapeHtml(v || "—")}</div>`
+              `<div>${escapeHtml(v || "—")}</div>`,
           )
           .join("");
       }
@@ -1239,9 +1259,15 @@
       }
 
       // ⚡ Bolt: Single regex pass with map lookup instead of 5 chained replace() calls
-      const htmlEntityMap = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+      const htmlEntityMap = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      };
       function escapeHtml(s) {
-        return String(s || "").replace(/[&<>"']/g, m => htmlEntityMap[m]);
+        return String(s || "").replace(/[&<>"']/g, (m) => htmlEntityMap[m]);
       }
 
       // Wire up UI
@@ -1260,7 +1286,12 @@
       $("#loadLsBtn").addEventListener("click", loadFromLocalBackup);
       $("#clearLsBtn").addEventListener("click", clearLocalBackup);
 
-      $("#listSearch").addEventListener("input", renderList);
+      let searchTimeout;
+      $("#listSearch").addEventListener("input", () => {
+        clearTimeout(searchTimeout);
+        // ⚡ Bolt: Debounce search input to prevent expensive rendering on every keystroke
+        searchTimeout = setTimeout(renderList, 250);
+      });
       $("#listSort").addEventListener("change", renderList);
 
       $("#newBtn").addEventListener("click", newMini);
