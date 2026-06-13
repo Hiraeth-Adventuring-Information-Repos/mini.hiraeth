@@ -22,3 +22,10 @@
 ## 2024-05-23 - [Single-Pass Data Aggregation]
 **Learning:** The `buildUniqueOptions` function iterated through the entire miniature collection 8 separate times (once for each category) to gather unique property values, causing redundant iterations resulting in O(K*N) complexity. With large datasets, parsing an array multiple times can severely degrade initialization performance.
 **Action:** Always prefer a single-pass O(N) traversal when extracting multiple aggregations from an array. Collect the relevant values into separate sets simultaneously during a single iteration, rather than using multiple array passes.
+## 2024-05-23 - [Cache Hidden Properties to Prevent JSON Export Leaks]
+**Learning:** When attempting to improve performance by caching computed values (e.g. `_searchText`, `_acqTime`) on normalized objects, these properties can unintentionally leak into exported outputs if `JSON.stringify` is called later. In a vanilla JS application managing local JSON storage without custom replacers, this results in bloated schema files.
+**Action:** When caching properties on objects intended for JSON export in Vanilla JS apps, always use `Object.defineProperties` with `enumerable: false`. This ensures the properties are accessible for internal searching/sorting but completely ignored by `JSON.stringify()`.
+
+## 2024-05-23 - [Debounce and Batch Rendering]
+**Learning:** Attaching a synchronous `renderList()` to an `'input'` event without debouncing, combined with appending generated items directly to the DOM one by one in a loop, causes significant UI freezing when typing rapidly.
+**Action:** Always wrap input event handlers with `setTimeout`/`clearTimeout` (debounce) when they trigger full re-renders, and use `document.createDocumentFragment()` to batch DOM appends before finally attaching them to the document to prevent layout thrashing.
