@@ -1211,6 +1211,7 @@
       // ⚡ Bolt: Cache DOM elements to avoid repetitive querySelectorAll calls during frequent renders
       const optionCountElements = {};
       const optionCountCache = {}; // Cache the current text content to avoid redundant DOM updates
+      const checkboxElements = {}; // Cache checkbox inputs to avoid repetitive getElementById calls
 
       // ⚡ Bolt: Lookup map to avoid evaluating nested ternary expressions inside hot loops
       const filterValueGetters = {
@@ -1616,6 +1617,10 @@
           cb.addEventListener("change", () => {
             toggleFilter(key, v, cb.checked);
           });
+
+          // ⚡ Bolt: Cache the checkbox element directly during creation
+          checkboxElements[`${key}_${v}`] = cb;
+
           const span = document.createElement("span");
           span.textContent = v;
           const countSpan = document.createElement("span");
@@ -2037,7 +2042,8 @@
       function syncCheckboxes() {
         for (const [key, set] of Object.entries(state.filters)) {
           for (const v of uniqueOptions[key]) {
-            const cb = document.getElementById(`f_${key}_${slug(v)}`);
+            // ⚡ Bolt: Use cached element reference to avoid O(N) DOM query and slug recalculation
+            const cb = checkboxElements[`${key}_${v}`];
             if (cb) {
               cb.checked = set.has(v);
             }
