@@ -22,3 +22,6 @@
 ## 2024-05-23 - [Single-Pass Data Aggregation]
 **Learning:** The `buildUniqueOptions` function iterated through the entire miniature collection 8 separate times (once for each category) to gather unique property values, causing redundant iterations resulting in O(K*N) complexity. With large datasets, parsing an array multiple times can severely degrade initialization performance.
 **Action:** Always prefer a single-pass O(N) traversal when extracting multiple aggregations from an array. Collect the relevant values into separate sets simultaneously during a single iteration, rather than using multiple array passes.
+## 2026-06-20 - [Cache UI Controls During Initial Render]
+**Learning:** Repetitive `document.getElementById` calls inside frequent loop updates (like sync functions called on every render cycle) combined with on-the-fly ID string recalculations (like regex slugging) can form a significant bottleneck. This is true especially when tracking many checkboxes or native DOM controls across large filter sets.
+**Action:** Always pre-cache explicit element references during the initial render or element creation phase into a local dictionary map rather than reconstructing and querying the DOM inside hot loops.
