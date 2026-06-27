@@ -23,3 +23,7 @@
 ## 2026-05-25 - Synchronizing Custom Filter UI and Native Checkboxes
 **Learning:** When programmatically updating filter states via custom UI elements (like removing an active filter chip), the underlying native UI controls (e.g., checkboxes in a dropdown menu) may become out of sync if not explicitly updated.
 **Action:** Always ensure that when custom filter tags or chips are removed, the corresponding native controls (`input[type="checkbox"]`) are explicitly unchecked to prevent confusing state mismatches for users.
+
+## 2026-05-26 - Adding title attributes to icon-only buttons
+**Learning:** Icon-only buttons that rely on `aria-label` for screen readers don't provide hover tooltips for sighted users.
+**Action:** Always add a matching `title` attribute to icon-only buttons with `aria-label` to provide native hover tooltips.
