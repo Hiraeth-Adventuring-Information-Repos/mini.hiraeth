@@ -1837,8 +1837,11 @@
           "acq-old": (a, b) => a._acqTime - b._acqTime,
           "paint-new": (a, b) => b._paintTime - a._paintTime,
           "paint-old": (a, b) => a._paintTime - b._paintTime,
-        }[by];
-        return [...minis].sort(get || get["name-asc"]);
+        };
+        const sorter = get[by];
+        return [...minis].sort(
+          typeof sorter === "function" ? sorter : get["name-asc"],
+        );
       }
 
       function renderActiveChips() {
