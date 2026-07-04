@@ -1830,15 +1830,18 @@
       }
 
       function sortMinis(minis, by) {
-        const get = {
+        const sorters = {
           "name-asc": (a, b) => collator.compare(a.name, b.name),
           "name-desc": (a, b) => collator.compare(b.name, a.name),
           "acq-new": (a, b) => b._acqTime - a._acqTime,
           "acq-old": (a, b) => a._acqTime - b._acqTime,
           "paint-new": (a, b) => b._paintTime - a._paintTime,
           "paint-old": (a, b) => a._paintTime - b._paintTime,
-        }[by];
-        return [...minis].sort(get || get["name-asc"]);
+        };
+        const get = sorters[by];
+        const comparator =
+          typeof get === "function" ? get : sorters["name-asc"];
+        return [...minis].sort(comparator);
       }
 
       function renderActiveChips() {
