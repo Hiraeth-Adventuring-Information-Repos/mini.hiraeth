@@ -23,3 +23,6 @@
 ## 2026-05-25 - Synchronizing Custom Filter UI and Native Checkboxes
 **Learning:** When programmatically updating filter states via custom UI elements (like removing an active filter chip), the underlying native UI controls (e.g., checkboxes in a dropdown menu) may become out of sync if not explicitly updated.
 **Action:** Always ensure that when custom filter tags or chips are removed, the corresponding native controls (`input[type="checkbox"]`) are explicitly unchecked to prevent confusing state mismatches for users.
+## 2023-10-25 - Syncing Title and Aria-Label for Icon-Only Buttons
+**Learning:** Adding `aria-label` to icon-only buttons is crucial for screen readers, but sighted users relying on tooltips for context are left guessing unless the `title` attribute is also provided and synchronized. Additionally, screen readers may still try to parse inline decorative SVGs unless explicitly hidden with `aria-hidden="true"`.
+**Action:** When implementing icon-only buttons or dynamically changing their `aria-label`, always ensure a matching `title` attribute is present. Always hide decorative SVGs from screen readers using `aria-hidden="true"`.
