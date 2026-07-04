@@ -1510,6 +1510,23 @@
           .join(" ")
           .toLowerCase();
 
+        // ⚡ Bolt: Cache option keys during initialization to avoid redundant evaluations inside renderOptionCounts loops
+        normalized._optionCacheKeys = [];
+        const keys = Object.keys(filterValueGetters);
+        for (const key of keys) {
+          const value = filterValueGetters[key](normalized);
+          if (value) {
+            normalized._optionCacheKeys.push(`${key}_${value}`);
+          }
+        }
+        // Make metadata properties non-enumerable to avoid leaking into serialization
+        Object.defineProperties(normalized, {
+          _acqTime: { enumerable: false },
+          _paintTime: { enumerable: false },
+          _searchText: { enumerable: false },
+          _optionCacheKeys: { enumerable: false },
+        });
+
         return normalized;
       }
 
@@ -1996,12 +2013,10 @@
 
         // ⚡ Bolt: Single pass over the filtered items, O(N) instead of O(K*N)
         for (const mini of baseSet) {
-          for (const key of keys) {
-            const value = filterValueGetters[key](mini);
-            if (value) {
-              const cacheKey = `${key}_${value}`;
-              globalCounts[cacheKey] = (globalCounts[cacheKey] || 0) + 1;
-            }
+          const cacheKeys = mini._optionCacheKeys;
+          for (let i = 0; i < cacheKeys.length; i++) {
+            const cacheKey = cacheKeys[i];
+            globalCounts[cacheKey] = (globalCounts[cacheKey] || 0) + 1;
           }
         }
 
