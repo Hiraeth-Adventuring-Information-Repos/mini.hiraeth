@@ -1701,6 +1701,27 @@
             }
           }
         });
+
+        // ⚡ Bolt: Event Delegation for grid items to prevent attaching O(N) event listeners
+        const gridEl = el("#grid");
+        if (gridEl) {
+          const handleGridInteraction = (e) => {
+            const card = e.target.closest(".card");
+            if (!card) return;
+            const id = card.dataset.id;
+            if (!id) return;
+            const m = allMinis.find((mini) => mini.id === id);
+            if (m) openDetail(m);
+          };
+
+          gridEl.addEventListener("click", handleGridInteraction);
+          gridEl.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              handleGridInteraction(e);
+            }
+          });
+        }
       }
 
       function setFiltersDropdownOpen(open) {
@@ -1904,13 +1925,8 @@
           card.className = "card";
           card.tabIndex = 0;
           card.setAttribute("role", "button");
-          card.addEventListener("click", () => openDetail(m));
-          card.addEventListener("keydown", (e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              openDetail(m);
-            }
-          });
+          // ⚡ Bolt: Store ID on the DOM element for Event Delegation
+          card.dataset.id = m.id;
 
           const firstImage =
             m.images.main[0] ||

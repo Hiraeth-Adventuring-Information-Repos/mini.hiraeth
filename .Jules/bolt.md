@@ -22,3 +22,6 @@
 ## 2024-05-23 - [Single-Pass Data Aggregation]
 **Learning:** The `buildUniqueOptions` function iterated through the entire miniature collection 8 separate times (once for each category) to gather unique property values, causing redundant iterations resulting in O(K*N) complexity. With large datasets, parsing an array multiple times can severely degrade initialization performance.
 **Action:** Always prefer a single-pass O(N) traversal when extracting multiple aggregations from an array. Collect the relevant values into separate sets simultaneously during a single iteration, rather than using multiple array passes.
+## 2024-05-27 - [Optimize DOM Interaction Memory Usage]
+**Learning:** Attaching multiple event listeners (e.g. `click`, `keydown`) to every single item in a large, frequently re-rendered vanilla JS grid leads to high memory overhead and degraded rendering performance due to garbage collection and event listener registration loops.
+**Action:** Always prefer Event Delegation for large lists or grids. Attach a single set of event listeners to the parent container, use `e.target.closest(selector)` to identify the interacted item, and use `dataset` attributes to map the DOM element back to the underlying data model.
