@@ -23,3 +23,11 @@
 ## 2026-05-25 - Synchronizing Custom Filter UI and Native Checkboxes
 **Learning:** When programmatically updating filter states via custom UI elements (like removing an active filter chip), the underlying native UI controls (e.g., checkboxes in a dropdown menu) may become out of sync if not explicitly updated.
 **Action:** Always ensure that when custom filter tags or chips are removed, the corresponding native controls (`input[type="checkbox"]`) are explicitly unchecked to prevent confusing state mismatches for users.
+
+## 2024-06-15 - Adding Tooltips to Icon-Only Buttons
+**Learning:** Even when `aria-label` is present for screen readers, sighted users often rely on hover tooltips to understand icon-only buttons (like UI toggle buttons, or carousel navigation controls). This is especially true if the icon is somewhat ambiguous.
+**Action:** Always add a `title` attribute matching the `aria-label` to icon-only buttons to provide a native hover tooltip.
+
+## 2024-06-15 - Decorative SVGs and Screen Readers
+**Learning:** Decorative `<svg>` icons inside buttons or UI elements can be interpreted by screen readers, leading to confusing or verbose output if they are not explicitly hidden.
+**Action:** Always add `aria-hidden="true"` to decorative `<svg>` elements to ensure screen readers skip them and focus on the parent's `aria-label` or surrounding text content.
