@@ -22,3 +22,6 @@
 ## 2024-05-23 - [Single-Pass Data Aggregation]
 **Learning:** The `buildUniqueOptions` function iterated through the entire miniature collection 8 separate times (once for each category) to gather unique property values, causing redundant iterations resulting in O(K*N) complexity. With large datasets, parsing an array multiple times can severely degrade initialization performance.
 **Action:** Always prefer a single-pass O(N) traversal when extracting multiple aggregations from an array. Collect the relevant values into separate sets simultaneously during a single iteration, rather than using multiple array passes.
+## 2024-05-23 - [Optimize Grid Rendering with Event Delegation]
+**Learning:** Found a performance bottleneck in the `renderGrid` function where attaching individual `click` and `keydown` event listeners to each miniature card inside a loop caused significant memory overhead and slowed down DOM rendering, especially for large lists.
+**Action:** Always prefer Event Delegation for large lists or grids. Attach a single set of event listeners to the parent container (e.g. `#grid`), use `event.target.closest('.card')` to identify the clicked element, and retrieve its corresponding data using a cached mapping (e.g. `dataset.id` mapped to a JS object reference) for $O(1)$ lookups.
