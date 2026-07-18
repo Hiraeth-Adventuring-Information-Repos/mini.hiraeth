@@ -1730,13 +1730,27 @@
           const raw = localStorage.getItem(STORAGE_KEY);
           if (!raw) return;
           const saved = JSON.parse(raw);
-          state.query = saved.query || "";
-          state.sortBy = saved.sortBy || "name-asc";
-          state.viewMode = saved.viewMode || "grid";
-          for (const k of Object.keys(state.filters)) {
-            const arr = saved.filters?.[k] || [];
-            state.filters[k] = new Set(arr);
+
+          if (!saved || typeof saved !== "object" || Array.isArray(saved))
+            return;
+
+          state.query = typeof saved.query === "string" ? saved.query : "";
+          state.sortBy =
+            typeof saved.sortBy === "string" ? saved.sortBy : "name-asc";
+          state.viewMode =
+            typeof saved.viewMode === "string" ? saved.viewMode : "grid";
+
+          if (
+            saved.filters &&
+            typeof saved.filters === "object" &&
+            !Array.isArray(saved.filters)
+          ) {
+            for (const k of Object.keys(state.filters)) {
+              const arr = saved.filters[k];
+              state.filters[k] = new Set(Array.isArray(arr) ? arr : []);
+            }
           }
+
           el("#search").value = state.query;
           el("#sortBy").value = state.sortBy;
           updateViewModeUI();
